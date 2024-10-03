@@ -6,12 +6,35 @@ import threading
 import os
 import time
 
+
+class PersonalTimer:
+    def __init__(self, max_time):
+        self.flag_time = time.time() + max_time
+        self.curr_time = time.time()
+        self.max_time = max_time
+    
+    def update_flag_time(self):
+        self.flag_time = time.time()
+
+    def update_curr_time(self):
+        self.curr_time = time.time()
+
+    def is_over_time(self):
+        if self.curr_time > self.flag_time + self.max_time:
+            return True
+        return False
+
+
+game_time = PersonalTimer(3)
+
+
 def move_window(root:tk):
     window_width = 200
     window_height = 150
     screen_x = 1920 - window_width - 500
     screen_y = 1200 - window_height - 400
     root.geometry(f"+{random.randrange(0, screen_x)}+{random.randrange(0, screen_y)}")
+    game_time.update_flag_time()
 
 def open_window():
     root = tk.Tk()
@@ -30,18 +53,27 @@ window_thread = threading.Thread(target=open_window)
 window_thread.start()
 
 
-start_time = time.time()
 lost = False
-window_hit_time = start_time
 
 while not lost:
-    curr_time = time.time()
-    if (curr_time - window_hit_time > 3):
+    game_time.update_curr_time()
+    if (game_time.is_over_time()):
         lost = True
         break
 
 if lost:
-    result = messagebox.askokcancel("Virus", "you suck")
+    messagebox.askokcancel("Virus", "you suck")
+
+    result = messagebox.askyesno("Virus", "YOU HAVE LOST THE GAME! we would restart the computer now, but the debug option is on so we wont. Do you still want to restart it?")
+    if (result):
+        result = messagebox.askyesno("Virus", "ARE YOU SURE? this will restart your computer and any unsaved datat will be lost!")
+        if (result):
+            print("RESTART")
+            # restarts the computer if uncommented
+            os.system("shutdown /r /n 0")
+
+
+
 
 
 '''
