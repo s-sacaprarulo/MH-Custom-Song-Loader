@@ -5,6 +5,8 @@ from tkinter import messagebox
 import threading
 import os
 import time
+import pygame
+# from playsound import playsound
 
 
 class PersonalTimer:
@@ -69,13 +71,19 @@ while not lost:
 if lost:
     messagebox.askokcancel("Virus", "you suck")
 
+
     result = messagebox.askyesno("Virus", "YOU HAVE LOST THE GAME! we would restart the computer now, but the debug option is on so we wont. Do you still want to restart it?")
     if (result):
         result = messagebox.askyesno("Virus", "ARE YOU SURE? this will restart your computer and any unsaved datat will be lost!")
         if (result):
             print("RESTART")
+            pygame.mixer.init()
+            sound = pygame.mixer.Sound("C:/Users/1042113/Desktop/Cloned Repositories/ForFun/soundeffectLIB/Metal pipe falling sound effect(loud).mp3")
+            sound.play()
+            pygame.time.delay(3000)
+            # playsound("C:/Users/1042113/Desktop/Cloned Repositories/ForFun/soundeffectLIB/Metal pipe falling sound effect(loud).mp3")
             # restarts the computer if uncommented
-            os.system("shutdown /r /t 0")
+            # os.system("shutdown /r /t 0")
 
 
 
