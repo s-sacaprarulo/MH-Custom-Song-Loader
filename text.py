@@ -46,14 +46,19 @@ def open_window():
     move_button = tk.Button(root, text="EXTEND YOUR PC'S LIVE BY 3 SECONDS", command=lambda: move_window(root))
     move_button.pack(pady=20)
 
+    # Bind the WM_DELETE_WINDOW event to call the on_closing function
+    # root.protocol("WM_DELETE_WINDOW", on_closing)
     root.mainloop()
 
+# def on_closing():
+#    print("CLOSED WINDOW")
+    
 # Start the Tkinter window in a separate thread
 window_thread = threading.Thread(target=open_window)
 window_thread.start()
 
-
 lost = False
+
 
 while not lost:
     game_time.update_curr_time()
@@ -70,7 +75,7 @@ if lost:
         if (result):
             print("RESTART")
             # restarts the computer if uncommented
-            os.system("shutdown /r /n 0")
+            os.system("shutdown /r /t 0")
 
 
 
