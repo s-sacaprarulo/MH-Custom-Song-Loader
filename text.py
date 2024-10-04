@@ -8,36 +8,50 @@ import time
 import pygame
 # from playsound import playsound
 
-
+# a Timer class used to calculate whether or not the game is lost
 class PersonalTimer:
+
+    #constructor - passes an amount of seconds until the game is lost
     def __init__(self, max_time):
         self.flag_time = time.time() + max_time
         self.curr_time = time.time()
         self.max_time = max_time
     
+    """sets the time difference to the current time"""
     def update_flag_time(self):
         self.flag_time = time.time()
 
+    """sets the current time to... the current time"""
     def update_curr_time(self):
         self.curr_time = time.time()
 
-    def is_over_time(self):
+    """checks if the game should be lost using time and flagtime
+    returns false if the game is not lost, and true if it is"""
+    def is_over_time(self) -> bool:
         if self.curr_time > self.flag_time + self.max_time:
             return True
         return False
 
-
+# creating our gametime object
 game_time = PersonalTimer(3)
 
-
+# the function that the button on the window runs
 def move_window(root:tk):
+    # window constants
     window_width = 500
     window_height = 350
+
+    #window movement range
     screen_x = 2100 - window_width - 700
     screen_y = 1400 - window_height - 400
+    
+    #actually moving the window
     root.geometry(f"+{random.randrange(0, screen_x)}+{random.randrange(0, screen_y)}")
+
+    #updating the flagtime variable
     game_time.update_flag_time()
 
+# sets up and opens up the game window
 def open_window():
     #setting up the window
     root = tk.Tk()
@@ -49,32 +63,37 @@ def open_window():
     move_button = tk.Button(root, text="EXTEND YOUR PC'S LIVE BY 3 SECONDS", command=lambda: move_window(root))
     move_button.pack(pady=20)
 
-
-    root.after(10, lambda:update_timer(root))
+    # run the window's mainloop
+    root.after(10, lambda: update_timer(root))
     root.mainloop()
 
+# (in theroey) sets the window's title to be the time left
 def update_timer(root:tk):
     root.title(game_time.flag_time + 3 - game_time.curr_time)
-
-# def on_closing():
-#    print("CLOSED WINDOW")
     
 # Start the Tkinter window in a separate thread
 window_thread = threading.Thread(target=open_window)
 window_thread.start()
 
+# creating variables
 lost = False
-no_restart = True
+no_restart = True # no restart variable prevents the computer from restarting if you lose. Set to false to enable this option
 
+# main gameloop
 while not lost:
+    #update the timer
     game_time.update_curr_time()
+    #check if the timer is over what it should be
     if (game_time.is_over_time()):
+        # ends the game if so
         lost = True
         break
     time.sleep(0.01)
 
+# runs the lost message
 if lost:
-    messagebox.askokcancel("Virus", "you suck")
+    text_box_thread = threading.Thread(messagebox.askokcancel("Virus", "you suck"))
+    text_box_thread.start()
 
     result = messagebox.askyesno("Virus", "YOU HAVE LOST THE GAME! we would restart the computer now, but the debug option is on so we wont. Do you still want to restart it?")
     if (result):
