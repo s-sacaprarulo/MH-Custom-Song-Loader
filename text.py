@@ -67,6 +67,9 @@ def open_window():
     root.after(10, lambda: update_timer(root))
     root.mainloop()
 
+def show_loss_window():
+    messagebox.askokcancel("Virus", "you suck")
+
 # (in theroey) sets the window's title to be the time left
 def update_timer(root:tk):
     root.title(game_time.flag_time + 3 - game_time.curr_time)
@@ -92,18 +95,24 @@ while not lost:
 
 # runs the lost message
 if lost:
-    text_box_thread = threading.Thread(messagebox.askokcancel("Virus", "you suck"))
+    #TODO: multithread the showlosswindow textbox
+    text_box_thread = threading.Thread(target=show_loss_window)
     text_box_thread.start()
 
+    #debug option, runs a window asking whether or not the computer should restart
     result = messagebox.askyesno("Virus", "YOU HAVE LOST THE GAME! we would restart the computer now, but the debug option is on so we wont. Do you still want to restart it?")
     if (result):
         result = messagebox.askyesno("Virus", "ARE YOU SURE? this will restart your computer and any unsaved datat will be lost!")
         if (result):
+            # plays metal pipe.sfx on loss
             pygame.mixer.init()
             sound = pygame.mixer.Sound("C:/Users/1042113/Desktop/Cloned Repositories/ForFun/soundeffectLIB/Metal pipe falling sound effect(loud).mp3")
             sound.play()
-            # pygame.time.delay(1200)
+
+            # wait 1.2s
             time.sleep(1.2)
+
+            #restarts the pc if no_restart is false
             print("RESTART")
             if not no_restart:
                 os.system("shutdown /r /t 0")
