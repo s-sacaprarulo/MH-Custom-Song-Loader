@@ -67,8 +67,8 @@ def open_window():
     root.after(10, lambda: update_timer(root))
     root.mainloop()
 
-def show_loss_window():
-    messagebox.askokcancel("Virus", "you suck")
+#def show_loss_window():
+#    messagebox.askokcancel("Virus", "you suck")
 
 # (in theroey) sets the window's title to be the time left
 def update_timer(root:tk):
@@ -96,8 +96,8 @@ while not lost:
 # runs the lost message
 if lost:
     #TODO: multithread the showlosswindow textbox
-    text_box_thread = threading.Thread(target=show_loss_window)
-    text_box_thread.start()
+#    text_box_thread = threading.Thread(target=show_loss_window)
+#    text_box_thread.start()
 
     #debug option, runs a window asking whether or not the computer should restart
     result = messagebox.askyesno("Virus", "YOU HAVE LOST THE GAME! we would restart the computer now, but the debug option is on so we wont. Do you still want to restart it?")
@@ -110,7 +110,7 @@ if lost:
             sound.play()
 
             # wait 1.2s
-            time.sleep(1.2)
+            time.sleep(0.8)
 
             #restarts the pc if no_restart is false
             print("RESTART")
