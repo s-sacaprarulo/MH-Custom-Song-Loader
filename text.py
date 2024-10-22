@@ -116,32 +116,3 @@ if lost:
             print("RESTART")
             if not no_restart:
                 os.system("shutdown /r /t 0")
-
-
-
-
-
-'''
-# Create the main window
-root = tk.Tk()
-
-# Set the window title
-root.title("My Window")
-
-
-
-window_x:int = 500
-window_y:int = 500
-root.geometry(f"+{window_x}+{window_y}")
-
-
-
-if result:
-    os.system("shutdown /r /t 0")
-else:
-    new_result = messagebox.askokcancel("Virus", "NO LOL I'M KILLING IT ANYWAY")
-    if new_result:
-        os.system("shutdown /r /t 0")
-    else:
-        os.system("shutdown /r /t 0")
-'''
