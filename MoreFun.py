@@ -12,15 +12,25 @@ import pygame
 def temp_function():
     number = random.randint(0, 1)
     if number == 0:
-        print("0")
+        print("Lose")
+        pygame.mixer.init()
+        sound = pygame.mixer.Sound("C:/Users/1042113/Desktop/Cloned Repositories/ForFun/soundeffectLIB/Taco Bell Bong - Sound Effect (HD).mp3")
+        sound.play()
+
+        time.sleep(1.2)
         # os.system("shutdown /r /t 0") # shuts down the system if not commented
-        output = messagebox.askyesno("Gambling", "You lost, Shutdown code is inactive. Want to try again?")
+        output = messagebox.askyesno("Gambling", "You Suck")
         if output:
             temp_function()
 
     elif number == 1:
-        print("1")
-        output = messagebox.askyesno("Gambling", "Why did you do that? Want to do it again?")
+        print("Win")
+        pygame.mixer.init()
+        sound = pygame.mixer.Sound("C:/Users/1042113/Desktop/Cloned Repositories/ForFun/soundeffectLIB/onlymp3.to - vine_boom-_vBVGjFdwk4-192k-1708393618.mp3")
+        sound.play()
+
+        time.sleep(1.2)
+        output = messagebox.askyesno("Gambling", "GG EZ")
         if output:
             temp_function()
 
