@@ -17,17 +17,21 @@ def shot_fired(bullet_chambers:int, player_turn:int):
         # playing sound effects
         print("Lose")
         pygame.mixer.init()
-        sound = pygame.mixer.Sound("C:/Users/1042113/Desktop/Cloned Repositories/ForFun/soundeffectLIB/Taco Bell Bong - Sound Effect (HD).mp3")
+        sound = pygame.mixer.Sound("C:/Users/1042113/Desktop/Cloned Repositories/ForFun/soundeffectLIB/onlymp3.to - vine_boom-_vBVGjFdwk4-192k-1708393618.mp3")
         sound.play()
-        time.sleep(1.2)
+        time.sleep(1)
 
         # getting the next player
         next_player = get_next_player_up(player_turn)
-        out_players[player_turn] = False
 
         # checks if there is only one player left alive, if so, ends the game
+        out_players[player_turn] = False
         winning_player = any_more_players_alive()
         if  winning_player != None:
+
+            pygame.mixer.init()
+            sound = pygame.mixer.Sound("C:/Users/1042113/Desktop/Cloned Repositories/ForFun/soundeffectLIB/Staying Alive Short Ver.mp3")
+            sound.play()
             messagebox.showinfo("Russian Roulette", f"player {winning_player} Wins!")
             return
 
@@ -40,10 +44,10 @@ def shot_fired(bullet_chambers:int, player_turn:int):
     else:
         print("Win")
         pygame.mixer.init()
-        sound = pygame.mixer.Sound("C:/Users/1042113/Desktop/Cloned Repositories/ForFun/soundeffectLIB/onlymp3.to - vine_boom-_vBVGjFdwk4-192k-1708393618.mp3")
+        sound = pygame.mixer.Sound("C:/Users/1042113\Desktop\Cloned Repositories\ForFun\soundeffectLIB\Bonk percise ver.mp3")
         sound.play()
 
-        time.sleep(1.2)
+        time.sleep(0.4)
         next_player = get_next_player_up(player_turn)
         output = messagebox.askyesno("Russian Roulette", f"Player {next_player}'s turn!")
         if output:
@@ -67,7 +71,7 @@ def get_next_player_up(current_player:int):
 def any_more_players_alive() -> int:
     alive_players = 0
     live_player_index = None
-    for i in range(len(out_players)):
+    for i in range(1, len(out_players) + 1, 1):
         item = out_players.get(i)
         if item:
             alive_players += 1
