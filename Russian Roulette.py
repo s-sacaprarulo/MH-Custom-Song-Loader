@@ -3,7 +3,6 @@ from typing import List
 from typing import Dict
 import tkinter as tk
 from tkinter import messagebox
-import threading
 import os
 import time
 import pygame
