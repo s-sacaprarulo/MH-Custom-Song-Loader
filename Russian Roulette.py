@@ -20,9 +20,9 @@ def shot_fired(bullet_chambers:int, player_turn:int):
         sound.play()
 
         time.sleep(1.2)
-        # os.system("shutdown /r /t 0") # shuts down the system if not commented
         next_player = get_next_player_up(player_turn)
         output = messagebox.askyesno("Russian Roulette", f"player {player_turn} dead! Player {next_player}'s turn!")
+        out_players[player_turn] = False
         if output:
             shot_fired(1, next_player)
 
@@ -40,9 +40,12 @@ def shot_fired(bullet_chambers:int, player_turn:int):
 
 
 def get_next_player_up(current_player:int):
-    if current_player == __numberplayers__:
-        return 1
-    return current_player+1
+    next_up_player = current_player+1
+    if next_up_player > __numberplayers__:
+        next_up_player = 1
+    while True:
+        if out_players[next_up_player]:
+            return next_up_player
 
 # setting up the window
 root = tk.Tk()
@@ -50,7 +53,11 @@ root.title("Russian Roulette")
 root.geometry("400x300+100+100")
 root.wm_attributes("-topmost", 1)
 
+# creates starting variables
 starting_player = random.randint(1, __numberplayers__)
+out_players = dict()
+for i in range(__numberplayers__ + 1):
+    out_players[i] = True
 
 button = tk.Button(root, text=f"Player {starting_player} commences!", command=lambda: shot_fired(1, starting_player))
 button.pack(pady=20)
