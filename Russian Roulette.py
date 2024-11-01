@@ -7,14 +7,13 @@ import os
 import time
 import pygame
 
-__numberplayers__ = 4
+__numberplayers__ = 2
 
 def shot_fired(bullet_chambers:int, player_turn:int):
     number = random.randint(1, 6)
 
     if number <= bullet_chambers:
         # playing sound effects
-        print("Lose")
         pygame.mixer.init()
         sound = pygame.mixer.Sound("C:/Users/1042113/Desktop/Cloned Repositories/ForFun/soundeffectLIB/onlymp3.to - vine_boom-_vBVGjFdwk4-192k-1708393618.mp3")
         sound.play()
@@ -41,7 +40,6 @@ def shot_fired(bullet_chambers:int, player_turn:int):
             shot_fired(1, next_player)
 
     else:
-        print("Win")
         pygame.mixer.init()
         sound = pygame.mixer.Sound("C:/Users/1042113\Desktop\Cloned Repositories\ForFun\soundeffectLIB\Bonk percise ver.mp3")
         sound.play()
