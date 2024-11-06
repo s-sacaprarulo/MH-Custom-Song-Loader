@@ -10,7 +10,7 @@ import pygame
 __numberplayers__ = 2
 
 def shot_fired(bullet_chambers:int, player_turn:int):
-    number = random.randint(1, 6)
+    number = random.randint(1, 7)
 
     if number <= bullet_chambers:
         # playing sound effects
@@ -46,9 +46,14 @@ def shot_fired(bullet_chambers:int, player_turn:int):
 
         time.sleep(0.4)
         next_player = get_next_player_up(player_turn)
-        output = messagebox.askyesno("Russian Roulette", f"Player {next_player}'s turn!")
-        if output:
-            shot_fired(bullet_chambers + 1, next_player)
+        if bullet_chambers >= 5:
+            output = messagebox.askyesno("Russian Roulette", f"Barrel Spun, Player {next_player}'s turn!")
+            if output:
+                shot_fired(1, next_player)
+        else:
+            output = messagebox.askyesno("Russian Roulette", f"Player {next_player}'s turn!")
+            if output:
+                shot_fired(bullet_chambers + 1, next_player)
 
 
 def get_next_player_up(current_player:int):
