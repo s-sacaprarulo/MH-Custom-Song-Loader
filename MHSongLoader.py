@@ -7,7 +7,7 @@ MAIN_PC_TEST_FILE_PATH = "C:/Users/santi/OneDrive/Desktop/Cloned Repositories/Fo
 PC_HELLSINGER_FILE_PATH = "C:/Program Files (x86)/Steam/steamapps/common/Metal Hellsinger/Metal_Data/StreamingAssets/customsongs.json"
 VR_HELLSINGER_FILE_PATH = "C:/Program Files (x86)/Steam/steamapps/common/MetalHellsingerVR/MetalVR_Data/StreamingAssets/customsongs.json"
 
-JSON_FILE_LOCATION:str = PC_HELLSINGER_FILE_PATH
+JSON_FILE_LOCATION:str = SCHOOL_FILE_PATH
 
 INTRO_CONST:str = "{\"customLevelMusic\" : ["
 OUTRO_CONST:str = "]}"
@@ -73,6 +73,7 @@ def create_custom_song_string(hell:str, song:str) -> str:
     return main_level_music
     
 songs_string = ""   
+#input("ask")
 try:
     songs_string = create_custom_song_string("Acheron", "Gold")
 except Exception as e:
