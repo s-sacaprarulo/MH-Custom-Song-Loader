@@ -6,7 +6,7 @@ import os
 import time
 import pygame
 
-__numberplayers__ = 2
+__numberplayers__ = 3
 
 def shot_fired(bullet_chambers:int, player_turn:int):
     number = random.randint(1, 7)
