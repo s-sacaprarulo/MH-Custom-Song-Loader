@@ -9,6 +9,11 @@ VR_HELLSINGER_FILE_PATH = "C:/Program Files (x86)/Steam/steamapps/common/MetalHe
 
 JSON_FILE_LOCATION:str = SCHOOL_FILE_PATH
 
+LIST_SONG_BANK_FILE = 0
+LIST_SONG_ACT_CODE = 1
+LIST_SONG_BPM = 2
+LIST_SONG_OFFSET = 3
+
 INTRO_CONST:str = "{\"customLevelMusic\" : ["
 OUTRO_CONST:str = "]}"
 
@@ -20,6 +25,50 @@ BASE_OFFSET:str = "0.06"
 #codes for the different types of songs
 NOACTBANKCODE:str = "{95972dee-fd3a-4a5c-9024-8f714883936e}"
 
+SONG_DICT:dict[list[str]] = {"Gold" : ["GoldBank",NOACTBANKCODE,"155", "0.16"],
+                             "Halo" : ["HaloBank",NOACTBANKCODE,"80","0.06"],
+                             "Strangers" : ["StrangersBank",NOACTBANKCODE,"150","0.06"],
+                             "NightFall" : ["NightFallBank",NOACTBANKCODE,"192","0.3"],
+                             "IfYouCantHang" : ["NightFallBank",NOACTBANKCODE,"192","0.6"],
+                             "TheThingsWeBelieveIn" : ["TheThingsWeBelieveInBank",NOACTBANKCODE,"122","0.06"],
+                             "HopeIsTheThingWithFeathers" : ["HopeIsTheThingWithFeathersBank",NOACTBANKCODE,"128","0.06"]} #as elliott wanted >:(
+
+
+
+#creates a string for a specific song for a given hell
+#raises an exception if the hell or custom song do not exist
+def create_custom_song_string(hell:str, song:str) -> str:
+    if not hell in HELL_LIST:
+        raise Exception("Hell not found! (did you misspell the hell?)")
+    try:
+        SONG_DICT[song]
+    except:
+        raise Exception("Song not found! (did you misspell it or not import it into python?)")
+    level_name_str = f"\"LevelName\" : \"{hell}\","
+    Bank_str = "\"Bank\" : \"" + SONG_DICT.get(song)[LIST_SONG_BANK_FILE] +"\","
+    event_str = "\"Event\" : \"" + SONG_DICT.get(song)[LIST_SONG_ACT_CODE] + "\","
+    low_hp_event_str = "\"LowHealthBeatEvent\" : \"" + SONG_DICT.get(song)[LIST_SONG_ACT_CODE] + "\","
+    offset_str = "\"BeatInputOffset\" : " + SONG_DICT.get(song)[LIST_SONG_OFFSET] + ","
+    bpm_str = "\"BPM\" : " + SONG_DICT.get(song)[LIST_SONG_BPM]
+    main_level_music = "{" + level_name_str + "\"MainMusic\" : {" + Bank_str + event_str + low_hp_event_str + offset_str + bpm_str + "}}"
+    return main_level_music
+    
+songs_string = ""   
+#input("ask")
+try:
+    songs_string = create_custom_song_string("Gehenna", "NightFall")
+except Exception as e:
+    print(e)
+    pass
+
+with open(JSON_FILE_LOCATION, "w") as file:
+    file.write(INTRO_CONST + songs_string + OUTRO_CONST)
+
+
+
+
+
+    '''
 #The song files for all the different custom songs
 SONG_FILE_DICT:dict = {"Gold" : "GoldBank",
                        "Halo" : "HaloBank",
@@ -55,30 +104,4 @@ SONG_OFFSET_DICT:dict = {"Gold" : "0.16",
                          "IfYouCantHang" : "0.6",
                          "TheThingsWeBelieveIn" : "0.06",
                          "HopeIsTheThingWithFeathers" : "0.06"}
-
-#creates a string for a specific song for a given hell
-#raises an exception if the hell or custom song do not exist
-def create_custom_song_string(hell:str, song:str) -> str:
-    if not hell in HELL_LIST:
-        raise Exception("Hell not found! (did you misspell the hell?)")
-    if not song in SONG_FILE_DICT:
-        raise Exception("Song not found! (did you import it into python?)")
-    level_name_str = f"\"LevelName\" : \"{hell}\","
-    Bank_str = "\"Bank\" : \"" + SONG_FILE_DICT.get(song) +"\","
-    event_str = "\"Event\" : \"" + SONG_KEY_DICT.get(song) + "\","
-    low_hp_event_str = "\"LowHealthBeatEvent\" : \"" + SONG_KEY_DICT.get(song) + "\","
-    offset_str = "\"BeatInputOffset\" : " + SONG_OFFSET_DICT.get(song) + ","
-    bpm_str = "\"BPM\" : " + SONG_BPM_DICT.get(song)
-    main_level_music = "{" + level_name_str + "\"MainMusic\" : {" + Bank_str + event_str + low_hp_event_str + offset_str + bpm_str + "}}"
-    return main_level_music
-    
-songs_string = ""   
-#input("ask")
-try:
-    songs_string = create_custom_song_string("Acheron", "Gold")
-except Exception as e:
-    print(e)
-    pass
-
-with open(JSON_FILE_LOCATION, "w") as file:
-    file.write(INTRO_CONST + songs_string + OUTRO_CONST)
+'''
