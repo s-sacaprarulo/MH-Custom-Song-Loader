@@ -1,0 +1,51 @@
+{
+    "customLevelMusic" : [
+        {
+            "LevelName" : "Gehenna",
+            "MainMusic" : {
+                "Bank" : "GoldBank",
+                "Event": "{95972dee-fd3a-4a5c-9024-8f714883936e}",
+                "LowHealthBeatEvent": "{95972dee-fd3a-4a5c-9024-8f714883936e}",
+                "BeatInputOffset": 0.16,
+                "BPM": 155
+            },
+            "BossMusic" : {
+                "Bank" : "StopSayingWeSoundLikeDragonforceBank",
+                "Event": "{95972dee-fd3a-4a5c-9024-8f714883936e}",
+                "LowHealthBeatEvent": "{95972dee-fd3a-4a5c-9024-8f714883936e}",
+                "BeatInputOffset": 0.06,
+                "BPM": 200
+            }
+        },
+        {
+            "LevelName" : "Voke",
+            "MainMusic" : {
+                "Bank" : "NightFallBank",
+                "Event": "{95972dee-fd3a-4a5c-9024-8f714883936e}",
+                "LowHealthBeatEvent": "{95972dee-fd3a-4a5c-9024-8f714883936e}",
+                "BeatInputOffset": 0.3,
+                "BPM": 192
+            }
+        },
+        {
+            "LevelName" : "Yhelm",
+            "MainMusic" : {
+                "Bank" : "IfYouCantHangBank",
+                "Event": "{95972dee-fd3a-4a5c-9024-8f714883936e}",
+                "LowHealthBeatEvent": "{95972dee-fd3a-4a5c-9024-8f714883936e}",
+                "BeatInputOffset": 0.6,
+                "BPM": 192
+            }
+        },
+        {
+            "LevelName" : "Incaustis",
+            "MainMusic" : {
+                "Bank" : "HaloBank",
+                "Event": "{95972dee-fd3a-4a5c-9024-8f714883936e}",
+                "LowHealthBeatEvent": "{95972dee-fd3a-4a5c-9024-8f714883936e}",
+                "BeatInputOffset": 0.2,
+                "BPM": 80
+            }
+        }
+    ]
+}
