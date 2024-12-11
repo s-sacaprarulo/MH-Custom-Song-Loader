@@ -9,9 +9,15 @@ MAIN_PC_TEST_FILE_PATH = "C:/Users/santi/OneDrive/Desktop/Cloned Repositories/Fo
 PC_HELLSINGER_FILE_PATH = "C:/Program Files (x86)/Steam/steamapps/common/Metal Hellsinger/Metal_Data/StreamingAssets/customsongs.json"
 VR_HELLSINGER_FILE_PATH = "C:/Program Files (x86)/Steam/steamapps/common/MetalHellsingerVR/MetalVR_Data/StreamingAssets/customsongs.json"
 
+PC_ENABLED_FILE = "C:/Program Files (x86)/Steam/steamapps/common/Metal Hellsinger/Metal_Data/StreamingAssets/customsongs.json"
+PC_DISABLED_FILE = "C:/Program Files (x86)/Steam/steamapps/common/Metal Hellsinger/Metal_Data/StreamingAssets/inactive_customsongs.json"
+
+TEST_ENABLED_FILE = "Test.json"
+TEST_DISABLED_FILE = "in_Test.json"
+
 JSON_FILE_LOCATION:str = PC_HELLSINGER_FILE_PATH
-FILE_NAME:str = "C:/Program Files (x86)/Steam/steamapps/common/Metal Hellsinger/Metal_Data/StreamingAssets/customsongs.json"
-DEACTIVATED_FILE_NAME:str = "C:/Program Files (x86)/Steam/steamapps/common/Metal Hellsinger/Metal_Data/StreamingAssets/inactive_customsongs.json"
+FILE_NAME:str = TEST_ENABLED_FILE
+DEACTIVATED_FILE_NAME:str = TEST_DISABLED_FILE
 
 LIST_SONG_BANK_FILE = 0
 LIST_SONG_ACT_CODE = 1
