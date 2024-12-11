@@ -1,6 +1,7 @@
 import sys
 import os
 import tkinter as tk
+from tkinter import StringVar
 import time
 
 #file paths
@@ -28,6 +29,10 @@ INTRO_CONST:str = "{\"customLevelMusic\" : ["
 OUTRO_CONST:str = "]}"
 
 HELL_LIST:list[str] = {"Voke", "Stygia", "Yhelm", "Incaustis", "Gehenna", "Nihil", "Acheron", "Sheol"}
+HELL_LIST.append("Voke")
+HELL_LIST.append("Stygia")
+HELL_LIST.append("Yhelm")
+HELL_LIST
 BASE_OFFSET:str = "0.06"
 
 #codes for the different types of songs
@@ -180,6 +185,37 @@ def kill():
     if output == "yes":
         sys.exit()
 
+def on_select(selected_song):
+    print(selected_song)
+
+root = tk.Tk()
+root.title("Song Loader")
+root.geometry("500x300")
+root.resizable(False,False)
+
+label = tk.Label(root, text="Custom Song Loader")
+label.pack(side=tk.TOP)
+
+list_button = tk.Button(root, text="List", width=100, height=1, command=lambda:print_list())
+attach_script_button = tk.Button(root,text="Attach", command=lambda:attach_script())
+deattach_script_button = tk.Button(root, text="Deattach", command=lambda:deattach_script())
+
+selected_song = StringVar(root)
+selected_song.set(list(SONG_DICT.keys())[0])
+song_select_dropdown = tk.OptionMenu(root, selected_song, *SONG_DICT.keys(), command=on_select)
+
+selected_hell = StringVar(root)
+selected_hell.set(list(HELL_LIST)[0])
+hell_select_dropdown = tk.OptionMenu(root, selected_hell, *HELL_LIST, command=on_select)
+
+list_button.pack(side=tk.BOTTOM)
+attach_script_button.place(x=390,y=0)
+deattach_script_button.place(x=440,y=0)
+song_select_dropdown.pack(side=tk.LEFT)
+hell_select_dropdown.pack(side=tk.LEFT)
+
+root.mainloop()
+sys.exit()
 
 #main loop of the program
 while True:
