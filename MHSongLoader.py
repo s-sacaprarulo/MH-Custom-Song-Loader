@@ -28,11 +28,7 @@ LIST_SONG_OFFSET = 3
 INTRO_CONST:str = "{\"customLevelMusic\" : ["
 OUTRO_CONST:str = "]}"
 
-HELL_LIST:list[str] = {"Voke", "Stygia", "Yhelm", "Incaustis", "Gehenna", "Nihil", "Acheron", "Sheol"}
-HELL_LIST.append("Voke")
-HELL_LIST.append("Stygia")
-HELL_LIST.append("Yhelm")
-HELL_LIST
+HELL_LIST:list[str] = ["Voke", "Stygia", "Yhelm", "Incaustis", "Gehenna", "Nihil", "Acheron", "Sheol"]
 BASE_OFFSET:str = "0.06"
 
 #codes for the different types of songs
@@ -59,7 +55,7 @@ ACTION_DICT:dict = {"load" : lambda : load_level(),
 
 #creates a string for a specific song for a given hell
 #raises an exception if the hell or custom song do not exist
-def create_custom_song_string(hell:str, main_song:str, boss:bool = False) -> str:
+def create_custom_song_string(hell:str, main_song:str, boss:bool = True) -> str:
     if not hell in HELL_LIST:
         raise Exception("Hell not found! (did you misspell the hell?)")
     try:
@@ -179,6 +175,7 @@ def deattach_script():
 def print_list():
     print(f"Hells: 'Voke', 'Stygia', 'Yhelm', 'Incaustis', 'Gehenna', 'Nihil', 'Acheron', 'Sheol'\nSongs: {list(SONG_DICT.keys())}")
 
+
 #Kills the program
 def kill():
     output = input("Are you sure? (Type 'yes' to continue or anything else to abort): ")
@@ -187,6 +184,25 @@ def kill():
 
 def on_select(selected_song):
     print(selected_song)
+'''
+def load_level_without_prompts():
+    time_start = time.time()
+    try:
+        songs_string = "" #defaults to an empty string so the game doesn't crash if the code errors for some reason
+        songs_string = create_custom_song_string(selected_song, selected_hell)
+
+        # This first check is to check if the file actually exists.
+        # We dont need to read the file, but if we try to write to a file that doesn't exist, it will create a new file
+        # this will throw an exception if the file does not exist and, thus, not overwrite it
+        with open(JSON_FILE_LOCATION, "r") as file:
+            pass
+        with open(JSON_FILE_LOCATION, "w") as file:
+            file.write(INTRO_CONST + songs_string + OUTRO_CONST)
+        time_end = time.time()
+        print(f"Operation completed successfully in {time_end - time_start} seconds!")
+    except Exception as e:
+        time_end = time.time()
+        print(f"Operation failed in {time_end - time_start} seconds with excpetion {e}\n(This may be because the custom songs are not attached run 'attach' to attach them. Or the file location may be incorrect)")
 
 root = tk.Tk()
 root.title("Song Loader")
@@ -199,6 +215,7 @@ label.pack(side=tk.TOP)
 list_button = tk.Button(root, text="List", width=100, height=1, command=lambda:print_list())
 attach_script_button = tk.Button(root,text="Attach", command=lambda:attach_script())
 deattach_script_button = tk.Button(root, text="Deattach", command=lambda:deattach_script())
+load_song_button = tk.Button(root, text="LOAD", command=lambda:load_level_without_prompts())
 
 selected_song = StringVar(root)
 selected_song.set(list(SONG_DICT.keys())[0])
@@ -209,6 +226,7 @@ selected_hell.set(list(HELL_LIST)[0])
 hell_select_dropdown = tk.OptionMenu(root, selected_hell, *HELL_LIST, command=on_select)
 
 list_button.pack(side=tk.BOTTOM)
+load_song_button.pack(side=tk.BOTTOM)
 attach_script_button.place(x=390,y=0)
 deattach_script_button.place(x=440,y=0)
 song_select_dropdown.pack(side=tk.LEFT)
@@ -216,6 +234,7 @@ hell_select_dropdown.pack(side=tk.LEFT)
 
 root.mainloop()
 sys.exit()
+'''
 
 #main loop of the program
 while True:
