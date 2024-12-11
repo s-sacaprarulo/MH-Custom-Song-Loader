@@ -36,14 +36,14 @@ NOACTBANKCODE:str = "{95972dee-fd3a-4a5c-9024-8f714883936e}"
 #key is the song name
 #list is the following: bank file, bank code, bpm, offset
 SONG_DICT:dict[list[str]] = {"Gold" : ["GoldBank",NOACTBANKCODE,"155", "0.16"],
-                             "Halo" : ["HaloBank",NOACTBANKCODE,"80","0.06"],
-                             "Strangers" : ["StrangersBank",NOACTBANKCODE,"150","0.06"],
+                             "Halo" : ["HaloBank",NOACTBANKCODE,"80",BASE_OFFSET],
+                             "Strangers" : ["StrangersBank",NOACTBANKCODE,"150",BASE_OFFSET],
                              "NightFall" : ["NightFallBank",NOACTBANKCODE,"192","0.3"],
                              "IfYouCantHang" : ["IfYouCantHangBank",NOACTBANKCODE,"192","0.6"],
-                             "TheThingsWeBelieveIn" : ["TheThingsWeBelieveInBank",NOACTBANKCODE,"122","0.06"],
-                             "HopeIsTheThingWithFeathers" : ["HopeIsTheThingWithFeathersBank",NOACTBANKCODE,"128","0.06"], #as elliott wanted >:(
-                             "CrabRave" : ["CrabRaveBank", NOACTBANKCODE, "125", "0.06"],
-                             "Weak" : ["WeakBank", NOACTBANKCODE, "124", "0.06"]}
+                             "TheThingsWeBelieveIn" : ["TheThingsWeBelieveInBank",NOACTBANKCODE,"122",BASE_OFFSET],
+                             "HopeIsTheThingWithFeathers" : ["HopeIsTheThingWithFeathersBank",NOACTBANKCODE,"128",BASE_OFFSET], #as elliott wanted >:(
+                             "CrabRave" : ["CrabRaveBank", NOACTBANKCODE, "125", BASE_OFFSET],
+                             "Weak" : ["WeakBank", NOACTBANKCODE, "124", BASE_OFFSET]}
 
 ACTION_DICT:dict = {"load" : lambda : load_level(),
                     "kill" : lambda : kill(),
@@ -142,7 +142,7 @@ def attach_script():
                 pass
         except Exception as e:
             end_time = time.time()
-            print(f"Operation failed in {end_time - start_time} because the file is already attached!")
+            print(f"Operation failed in {end_time - start_time} seconds because the file is already attached!")
             return
         os.rename(DEACTIVATED_FILE_NAME, FILE_NAME)
         end_time = time.time()
@@ -161,7 +161,7 @@ def deattach_script():
                 pass
         except Exception as e:
             end_time = time.time()
-            print(f"Operation failed in {end_time - start_time} because the file is already deattached!")
+            print(f"Operation failed in {end_time - start_time} seconds because the file is already deattached!")
             return
         os.rename(FILE_NAME, DEACTIVATED_FILE_NAME)
         end_time = time.time()
