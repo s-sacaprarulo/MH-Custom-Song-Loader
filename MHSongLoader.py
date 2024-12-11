@@ -180,13 +180,20 @@ def kill():
         sys.exit()
 
 
+#main loop of the program
 while True:
-
+    #gets a command
     command = input(f"Give a command {list(ACTION_DICT.keys())}: ")
+
+    #attempts to execute the command
     try:
         ACTION_DICT[command]()
+    
+    #if the command errors
     except Exception as e:
+        #checks if the error is caused by an invalid command
         if command == e.args[0]:
             print(f"Unknown command!")
+        #otherwise prints the error
         else:
             print(f"An error occured: {e}")
