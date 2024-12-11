@@ -15,7 +15,7 @@ PC_DISABLED_FILE = "C:/Program Files (x86)/Steam/steamapps/common/Metal Hellsing
 TEST_ENABLED_FILE = "Test.json"
 TEST_DISABLED_FILE = "in_Test.json"
 
-JSON_FILE_LOCATION:str = PC_HELLSINGER_FILE_PATH
+JSON_FILE_LOCATION:str = SCHOOL_FILE_PATH
 FILE_NAME:str = TEST_ENABLED_FILE
 DEACTIVATED_FILE_NAME:str = TEST_DISABLED_FILE
 
@@ -48,7 +48,8 @@ SONG_DICT:dict[list[str]] = {"Gold" : ["GoldBank",NOACTBANKCODE,"155", "0.16"],
 ACTION_DICT:dict = {"load" : lambda : load_level(),
                     "kill" : lambda : kill(),
                     "attach" : lambda : attach_script(),
-                    "deattach" : lambda : deattach_script()}
+                    "deattach" : lambda : deattach_script(),
+                    "list" : lambda : print_list()}
 
 
 #creates a string for a specific song for a given hell
@@ -79,7 +80,7 @@ def create_custom_song_string(hell:str, main_song:str, boss:bool = False) -> str
 
     return main_level_music + boss_level_music + "}"
 
-#creates a custom song in the console
+#creates a custom song in the console and adds it to customsongs.json
 def load_level():
     
     #get input hell and make sure it exists
@@ -117,6 +118,10 @@ def load_level():
     try:
         songs_string = "" #defaults to an empty string so the game doesn't crash if the code errors for some reason
         songs_string = create_custom_song_string(hell, song, boss)
+
+        # This first check is to check if the file actually exists.
+        # We dont need to read the file, but if we try to write to a file that doesn't exist, it will create a new file
+        # this will throw an exception if the file does not exist and, thus, not overwrite it
         with open(JSON_FILE_LOCATION, "r") as file:
             pass
         with open(JSON_FILE_LOCATION, "w") as file:
@@ -125,27 +130,63 @@ def load_level():
         print(f"Operation completed successfully in {time_end - time_start} seconds!")
     except Exception as e:
         time_end = time.time()
-        print(f"Operation failed in {time_end - time_start} seconds with excpetion {e} (This may be because the custom songs are not attached run 'attach' to attach them)")
+        print(f"Operation failed in {time_end - time_start} seconds with excpetion {e}\n(This may be because the custom songs are not attached run 'attach' to attach them. Or the file location may be incorrect)")
 
+#Attaches the customsongs.json file to Hellsinger by renaming the file back to 'customsongs.json'
+#This is so modded songs can be played once more without resetting the game
 def attach_script():
-    os.rename(DEACTIVATED_FILE_NAME, FILE_NAME)
+    start_time = time.time()
+    try:
+        try:
+            with open(DEACTIVATED_FILE_NAME, "r") as file:
+                pass
+        except Exception as e:
+            end_time = time.time()
+            print(f"Operation failed in {end_time - start_time} because the file is already attached!")
+            return
+        os.rename(DEACTIVATED_FILE_NAME, FILE_NAME)
+        end_time = time.time()
+        print(f"Operation successful in {end_time - start_time} seconds!")
+    except Exception as e:
+        end_time = time.time()
+        print(f"Operation failed in {end_time - start_time} seconds with error {e} \n(this may be because the file is already attached or the wrong file is set as the location)")
 
+#Deattaches the customsongs.json file from Hellsinger by renaming the file
+#This is so vanila songs can be played without resetting the game
 def deattach_script():
-    os.rename(FILE_NAME, DEACTIVATED_FILE_NAME)
+    start_time = time.time()
+    try:
+        try:
+            with open(FILE_NAME, "r") as file:
+                pass
+        except Exception as e:
+            end_time = time.time()
+            print(f"Operation failed in {end_time - start_time} because the file is already deattached!")
+            return
+        os.rename(FILE_NAME, DEACTIVATED_FILE_NAME)
+        end_time = time.time()
+        print(f"Operation successful in {end_time - start_time} seconds!")
+    except Exception as e:
+        end_time = time.time()
+        print(f"Operation failed in {end_time - start_time} seconds with error {e} \n(this may be because the file is already deattached or the wrong file is set as the location)")
     
-# action to kill the program
+def print_list():
+    print(f"Hells: 'Voke', 'Stygia', 'Yhelm', 'Incaustis', 'Gehenna', 'Nihil', 'Acheron', 'Sheol'\nSongs: {list(SONG_DICT.keys())}")
+
+#Kills the program
 def kill():
     output = input("Are you sure? (Type 'yes' to continue or anything else to abort): ")
     if output == "yes":
         sys.exit()
 
-is_active:bool = False
 
 while True:
 
-    command = input("Give a command ('load', 'attach', 'deattach', 'kill'): ")
+    command = input(f"Give a command {list(ACTION_DICT.keys())}: ")
     try:
         ACTION_DICT[command]()
     except Exception as e:
-        print(f"Unknown command OR an error occured: {e}")
-        pass
+        if command == e.args[0]:
+            print(f"Unknown command!")
+        else:
+            print(f"An error occured: {e}")
