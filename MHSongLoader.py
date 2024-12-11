@@ -1,4 +1,5 @@
 import sys
+import os
 import tkinter as tk
 import time
 
@@ -9,6 +10,8 @@ PC_HELLSINGER_FILE_PATH = "C:/Program Files (x86)/Steam/steamapps/common/Metal H
 VR_HELLSINGER_FILE_PATH = "C:/Program Files (x86)/Steam/steamapps/common/MetalHellsingerVR/MetalVR_Data/StreamingAssets/customsongs.json"
 
 JSON_FILE_LOCATION:str = PC_HELLSINGER_FILE_PATH
+FILE_NAME:str = "C:/Program Files (x86)/Steam/steamapps/common/Metal Hellsinger/Metal_Data/StreamingAssets/customsongs.json"
+DEACTIVATED_FILE_NAME:str = "C:/Program Files (x86)/Steam/steamapps/common/Metal Hellsinger/Metal_Data/StreamingAssets/inactive_customsongs.json"
 
 LIST_SONG_BANK_FILE = 0
 LIST_SONG_ACT_CODE = 1
@@ -37,7 +40,9 @@ SONG_DICT:dict[list[str]] = {"Gold" : ["GoldBank",NOACTBANKCODE,"155", "0.16"],
                              "Weak" : ["WeakBank", NOACTBANKCODE, "124", "0.06"]}
 
 ACTION_DICT:dict = {"load" : lambda : load_level(),
-                    "kill" : lambda : kill()}
+                    "kill" : lambda : kill(),
+                    "attach" : lambda : attach_script(),
+                    "deattach" : lambda : deattach_script()}
 
 
 #creates a string for a specific song for a given hell
@@ -106,14 +111,21 @@ def load_level():
     try:
         songs_string = "" #defaults to an empty string so the game doesn't crash if the code errors for some reason
         songs_string = create_custom_song_string(hell, song, boss)
+        with open(JSON_FILE_LOCATION, "r") as file:
+            pass
         with open(JSON_FILE_LOCATION, "w") as file:
             file.write(INTRO_CONST + songs_string + OUTRO_CONST)
         time_end = time.time()
         print(f"Operation completed successfully in {time_end - time_start} seconds!")
     except Exception as e:
         time_end = time.time()
-        print(f"Operation failed in {time_end - time_start} seconds with excpetion {e}")
+        print(f"Operation failed in {time_end - time_start} seconds with excpetion {e} (This may be because the custom songs are not attached run 'attach' to attach them)")
 
+def attach_script():
+    os.rename(DEACTIVATED_FILE_NAME, FILE_NAME)
+
+def deattach_script():
+    os.rename(FILE_NAME, DEACTIVATED_FILE_NAME)
     
 # action to kill the program
 def kill():
@@ -121,9 +133,11 @@ def kill():
     if output == "yes":
         sys.exit()
 
+is_active:bool = False
+
 while True:
 
-    command = input("Give a command: ")
+    command = input("Give a command ('load', 'attach', 'deattach', 'kill'): ")
     try:
         ACTION_DICT[command]()
     except Exception as e:
