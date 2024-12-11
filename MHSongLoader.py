@@ -169,7 +169,8 @@ def deattach_script():
     except Exception as e:
         end_time = time.time()
         print(f"Operation failed in {end_time - start_time} seconds with error {e} \n(this may be because the file is already deattached or the wrong file is set as the location)")
-    
+
+#Prints out the hells and songs
 def print_list():
     print(f"Hells: 'Voke', 'Stygia', 'Yhelm', 'Incaustis', 'Gehenna', 'Nihil', 'Acheron', 'Sheol'\nSongs: {list(SONG_DICT.keys())}")
 
