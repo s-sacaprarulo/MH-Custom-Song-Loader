@@ -43,15 +43,15 @@ NOACTBANKCODE:str = "{95972dee-fd3a-4a5c-9024-8f714883936e}"
 
 #key is the song name
 #list is the following: bank file, bank code, bpm, offset, [preview file, preview start time, preview duration]
-SONG_DICT:dict[list[str]] = {"Gold" : ["GoldBank",NOACTBANKCODE,"155", "0.16"],
-                             "Halo" : ["HaloBank",NOACTBANKCODE,"80",BASE_OFFSET,["HellsingerSongs\Beyonce_Halo.mp3", 50, 20]],
-                             "Strangers" : ["StrangersBank",NOACTBANKCODE,"150",BASE_OFFSET],
-                             "NightFall" : ["NightFallBank",NOACTBANKCODE,"192","0.3"],
-                             "IfYouCantHang" : ["IfYouCantHangBank",NOACTBANKCODE,"192","0.6"],
-                             "TheThingsWeBelieveIn" : ["TheThingsWeBelieveInBank",NOACTBANKCODE,"122",BASE_OFFSET],
-                             "HopeIsTheThingWithFeathers" : ["HopeIsTheThingWithFeathersBank",NOACTBANKCODE,"128",BASE_OFFSET], #as elliott wanted >:(
-                             "CrabRave" : ["CrabRaveBank", NOACTBANKCODE, "125", BASE_OFFSET],
-                             "Weak" : ["WeakBank", NOACTBANKCODE, "124", BASE_OFFSET]}
+SONG_DICT:dict[list[str]] = {"Gold" : ["GoldBank",NOACTBANKCODE,"155", "0.16",["HellsingerSongs/Loi-Gold.ogg",42,40]],
+                             "Halo" : ["HaloBank",NOACTBANKCODE,"80",BASE_OFFSET,["HellsingerSongs/Beyonce-Halo.mp3", 50, 23]],
+                             "Strangers" : ["StrangersBank",NOACTBANKCODE,"150",BASE_OFFSET,["HellsingerSongs/Dragonforce-Strangers.mp3",51,27]],
+                             "Night Fall" : ["NightFallBank",NOACTBANKCODE,"192","0.3",["HellsingerSongs/Blind_Guardian-NightFall.mp3",75,23]],
+                             "If You Cant Hang" : ["IfYouCantHangBank",NOACTBANKCODE,"192","0.6",["HellsingerSongs/Sleeping_With_Sirens-If_You_Can't_Hang.mp3",75,31]],
+                             "The Things We Believe In" : ["TheThingsWeBelieveInBank",NOACTBANKCODE,"122",BASE_OFFSET,["HellsingerSongs/Order_Organ-The_Things_we_believe_in.ogg",89,33]],
+                             "Hope Is The Thing With Feathers" : ["HopeIsTheThingWithFeathersBank",NOACTBANKCODE,"128",BASE_OFFSET,["HellsingerSongs/Shida_Aruya-Hope_Is_the_Thing_With_Feathers.mp3",59,31]], #as elliott wanted >:(
+                             "Crab Rave" : ["CrabRaveBank", NOACTBANKCODE, "125", BASE_OFFSET,["HellsingerSongs/Noisestorm-Crab_Rave.mp3",74,31]],
+                             "Weak" : ["WeakBank", NOACTBANKCODE, "124", BASE_OFFSET,["HellsingerSongs/AJR-Weak.ogg",32,32]]}
 
 ACTION_DICT:dict = {"load" : lambda : load_level(),
                     "kill" : lambda : kill(),
@@ -228,7 +228,7 @@ def preview_song():
     pygame.mixer.init()
     pygame.mixer.music.load(song[PREVIEW_SONG_FILE])
     pygame.mixer.music.play(start=song[PREVIEW_SONG_START_TIME])
-
+    playing_preview_song[0] = chosen_level_config[1]
     #(heres where it gets complicated)
     #creates a second thread to stop the song after its duration time
     #this thread goes to a different function
@@ -244,8 +244,10 @@ def stop_preview():
 
 #multithread comes to this fuction to stop the song after a certain amount of time has passed
 def _stop_after_preview_time(song_durr:int):
+    curr_song = chosen_level_config[1]
     time.sleep(song_durr)
-    pygame.mixer.music.stop()
+    if (playing_preview_song[0] == curr_song):
+        pygame.mixer.music.stop()
 #window setup
 
 #root setup
@@ -289,10 +291,12 @@ preview_button.pack(side = tk.RIGHT)
 stop_preview_button.pack(side = tk.RIGHT)
 
 chosen_level_config = [HELL_LIST[0], list(SONG_DICT.keys())[0]]
+playing_preview_song = [""]
 
 root.mainloop()
 sys.exit()
 
+#retired command prompt thing
 
 #main loop of the program
 while True:
