@@ -40,7 +40,7 @@ HELL_LIST:list[str] = ["Voke", "Stygia", "Yhelm", "Incaustis", "Gehenna", "Nihil
 HELL_DESCRIPTION:dict[list[str]] = {
                             "Voke":"Voke was the spot I spent time closest to. So many years adjacent to all that frozen awfulness, the cold seeps into your bones. Can only imagine what it's like to be locked up there forever.",
                             "Stygia":"Stygia. Lot of spiritual electricity, if you take my meaning, the kind the Judge just hrived on. Along with the lightning, there were some things in the shadows here who knew no master.",
-                            "Yhelm":"If you wanted to ask this Skull what real Hell would be for him, the I guess I'd say Yhelm. Souls here, cursed to be isolated from each other. Hard on us extroverts, I'll tell you that.",
+                            "Yhelm":"If you wanted to ask this Skull what real Hell would be for him, then I guess I'd say Yhelm. Souls here, cursed to be isolated from each other. Hard on us extroverts, I'll tell you that.",
                             "Incaustis":"Back before the Unknown showed up this was a key location. Souls doomed for greed here mined eternally for brass and iron and whatnot, and a host of squabbling minor demons with aspirations of greatness fought each other for their piece.",
                             "Gehenna":"Gehenna. Sinners here get locked up in tombs forever, guarded by demons. They say it's Hell for folks who uphold unjust laws, or hold up laws unjustly. I guess you could also say it's Hell for claustrophobic folks.",
                             "Nihil":"Nihil was the kind of Hell that wasn't really supposed to exist, kinda airy and cold relative to some others. Stories said it was a kind of proto-Hell, split off from someplace in the Heavens... But demons lie, so the truth is hard to figure.",
@@ -154,40 +154,32 @@ def load_level():
 #Attaches the customsongs.json file to Hellsinger by renaming the file back to 'customsongs.json'
 #This is so modded songs can be played once more without resetting the game
 def attach_script():
-    start_time = time.time()
     try:
         try:
             with open(DEACTIVATED_FILE_NAME, "r") as file:
                 pass
         except Exception as e:
-            end_time = time.time()
-            print(f"Operation failed in {end_time - start_time} seconds because the file is already attached!")
+            attach_outcome_label.config(text=f"Already Attached!")
             return
         os.rename(DEACTIVATED_FILE_NAME, FILE_NAME)
-        end_time = time.time()
-        print(f"Operation successful in {end_time - start_time} seconds!")
+        attach_outcome_label.config(text=f"Success!!!")
     except Exception as e:
-        end_time = time.time()
-        print(f"Operation failed in {end_time - start_time} seconds with error {e} \n(this may be because the file is already attached or the wrong file is set as the location)")
+        attach_outcome_label.config(text=f"Failed with error {e}")
 
 #Deattaches the customsongs.json file from Hellsinger by renaming the file
 #This is so vanila songs can be played without resetting the game
 def deattach_script():
-    start_time = time.time()
     try:
         try:
             with open(FILE_NAME, "r") as file:
                 pass
         except Exception as e:
-            end_time = time.time()
-            print(f"Operation failed in {end_time - start_time} seconds because the file is already deattached!")
+            attach_outcome_label.config(text=f"Already Deattached!")
             return
         os.rename(FILE_NAME, DEACTIVATED_FILE_NAME)
-        end_time = time.time()
-        print(f"Operation successful in {end_time - start_time} seconds!")
+        attach_outcome_label.config(text=f"Success!!!")
     except Exception as e:
-        end_time = time.time()
-        print(f"Operation failed in {end_time - start_time} seconds with error {e} \n(this may be because the file is already deattached or the wrong file is set as the location)")
+        attach_outcome_label.config(text=f"Failed with error {e}")
 
 #Prints out the hells and songs
 def print_list():
@@ -239,6 +231,7 @@ def preview_song():
     song:list[str] = SONG_DICT.get(chosen_level_config[1])[LIST_SONG_PREVIEW_SUBLIST]
     #plays the preview
     pygame.mixer.init()
+    set_volume(preview_volume_slider.get())
     pygame.mixer.music.load(song[PREVIEW_SONG_FILE])
     pygame.mixer.music.play(start=song[PREVIEW_SONG_START_TIME])
     playing_preview_song[0] = chosen_level_config[1]
@@ -263,6 +256,12 @@ def _stop_after_preview_time(song_durr:int):
         pygame.mixer.music.stop()
 #window setup
 
+def set_volume(volume):
+    try:
+        pygame.mixer.music.set_volume(float(volume)/100)
+    except:
+        pass
+
 def update_song_stats():
     song = SONG_DICT.get(chosen_level_config[1])
     song_BPM_label.config(text=f"BPM: {song[LIST_SONG_BPM]}")
@@ -278,6 +277,8 @@ root = tk.Tk()
 root.title("MH Custom Song Loader")
 root.geometry("500x300")
 root.resizable(False,False)
+root.iconphoto(False,tk.PhotoImage(file="Icon.png"))
+root.wm_attributes("-topmost", 1)
 
 #Labels
 label = tk.Label(root, text="METAL HELLSINGER CUSTOM SONG LOADER", font=("Helvetica", 16))
@@ -290,6 +291,8 @@ song_BPM_label = tk.Label(root, text="BPM: n/a")
 song_artist_label = tk.Label(root, text="Author: n/a")
 hell_name_label = tk.Label(root, text="n/a", font=("Helvetica", 20), anchor="center")
 hell_description_text_label = tk.Label(root, text="n/a",wraplength=250)
+volume_slider_label = tk.Label(root, text="Volume", font=("Helvetica", 7))
+attach_outcome_label = tk.Label(root, text="")
 
 #Buttons
 attach_script_button = tk.Button(root,text="Attach", command=lambda:attach_script())
@@ -307,11 +310,13 @@ song_select_dropdown = tk.OptionMenu(root, selected_song, *SONG_DICT.keys(), com
 selected_hell = StringVar(root)
 selected_hell.set(list(HELL_LIST)[0])
 hell_select_dropdown = tk.OptionMenu(root, selected_hell, *HELL_LIST, command=on_select)
+#preview volume slider
+preview_volume_slider = tk.Scale(root, from_=100, to=0,orient="vertical",command=set_volume,width=10, length=100)
 
 #positioning
 load_song_button.pack(side=tk.BOTTOM)
-attach_script_button.place(x=390,y=30)
-deattach_script_button.place(x=440,y=30)
+attach_script_button.place(x=3,y=30)
+deattach_script_button.place(x=53,y=30)
 hell_label.place(x=0,y=65)
 hell_select_dropdown.place(x=0,y=90)
 song_label.place(x=0, y=130)
@@ -324,6 +329,10 @@ song_artist_label.place(x=370, y=160)
 song_BPM_label.place(x=370, y=180)
 hell_name_label.place(x=180,y=50)
 hell_description_text_label.place(x=100,y=100)
+preview_volume_slider.set(25)
+preview_volume_slider.place(x=352,y=57)
+volume_slider_label.place(x=364, y=40)
+attach_outcome_label.place(x=112,y=33)
 
 chosen_level_config = [HELL_LIST[0], list(SONG_DICT.keys())[0]]
 playing_preview_song = [""]
