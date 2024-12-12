@@ -3,6 +3,8 @@ import os
 import tkinter as tk
 from tkinter import StringVar
 import time
+import pygame
+import threading
 
 #file paths
 SCHOOL_FILE_PATH = "C:/Users/1042113/Desktop/Cloned Repositories/ForFun/Test.json"
@@ -16,14 +18,19 @@ PC_DISABLED_FILE = "C:/Program Files (x86)/Steam/steamapps/common/Metal Hellsing
 TEST_ENABLED_FILE = "Test.json"
 TEST_DISABLED_FILE = "in_Test.json"
 
-JSON_FILE_LOCATION:str = SCHOOL_FILE_PATH
-FILE_NAME:str = TEST_ENABLED_FILE
-DEACTIVATED_FILE_NAME:str = TEST_DISABLED_FILE
+JSON_FILE_LOCATION:str = PC_HELLSINGER_FILE_PATH
+FILE_NAME:str = PC_ENABLED_FILE
+DEACTIVATED_FILE_NAME:str = PC_DISABLED_FILE
 
 LIST_SONG_BANK_FILE = 0
 LIST_SONG_ACT_CODE = 1
 LIST_SONG_BPM = 2
 LIST_SONG_OFFSET = 3
+LIST_SONG_PREVIEW_SUBLIST = 4
+
+PREVIEW_SONG_FILE = 0
+PREVIEW_SONG_START_TIME = 1
+PREVIEW_SONG_DURATION = 2
 
 INTRO_CONST:str = "{\"customLevelMusic\" : ["
 OUTRO_CONST:str = "]}"
@@ -35,9 +42,9 @@ BASE_OFFSET:str = "0.06"
 NOACTBANKCODE:str = "{95972dee-fd3a-4a5c-9024-8f714883936e}"
 
 #key is the song name
-#list is the following: bank file, bank code, bpm, offset
+#list is the following: bank file, bank code, bpm, offset, [preview file, preview start time, preview duration]
 SONG_DICT:dict[list[str]] = {"Gold" : ["GoldBank",NOACTBANKCODE,"155", "0.16"],
-                             "Halo" : ["HaloBank",NOACTBANKCODE,"80",BASE_OFFSET],
+                             "Halo" : ["HaloBank",NOACTBANKCODE,"80",BASE_OFFSET,["HellsingerSongs\Beyonce_Halo.mp3", 50, 20]],
                              "Strangers" : ["StrangersBank",NOACTBANKCODE,"150",BASE_OFFSET],
                              "NightFall" : ["NightFallBank",NOACTBANKCODE,"192","0.3"],
                              "IfYouCantHang" : ["IfYouCantHangBank",NOACTBANKCODE,"192","0.6"],
@@ -175,21 +182,25 @@ def deattach_script():
 def print_list():
     print(f"Hells: 'Voke', 'Stygia', 'Yhelm', 'Incaustis', 'Gehenna', 'Nihil', 'Acheron', 'Sheol'\nSongs: {list(SONG_DICT.keys())}")
 
-
 #Kills the program
 def kill():
     output = input("Are you sure? (Type 'yes' to continue or anything else to abort): ")
     if output == "yes":
         sys.exit()
 
+#function for selecting a dropdown item
 def on_select(selected_song):
-    print(selected_song)
-'''
+    if selected_song in HELL_LIST:
+        chosen_level_config[0] = selected_song
+    elif selected_song in SONG_DICT:
+        chosen_level_config[1] = selected_song
+
+#When you hit the load button
 def load_level_without_prompts():
     time_start = time.time()
     try:
         songs_string = "" #defaults to an empty string so the game doesn't crash if the code errors for some reason
-        songs_string = create_custom_song_string(selected_song, selected_hell)
+        songs_string = create_custom_song_string(chosen_level_config[0], chosen_level_config[1])
 
         # This first check is to check if the file actually exists.
         # We dont need to read the file, but if we try to write to a file that doesn't exist, it will create a new file
@@ -204,37 +215,84 @@ def load_level_without_prompts():
         time_end = time.time()
         print(f"Operation failed in {time_end - time_start} seconds with excpetion {e}\n(This may be because the custom songs are not attached run 'attach' to attach them. Or the file location may be incorrect)")
 
+#Preview song
+def preview_song():
+    # will stop the previous audio track if it exists
+    try:
+        pygame.mixer.music.stop()
+    except:
+        pass
+    #gets the song preview
+    song:list[str] = SONG_DICT.get(chosen_level_config[1])[LIST_SONG_PREVIEW_SUBLIST]
+    #plays the preview
+    pygame.mixer.init()
+    pygame.mixer.music.load(song[PREVIEW_SONG_FILE])
+    pygame.mixer.music.play(start=song[PREVIEW_SONG_START_TIME])
+
+    #(heres where it gets complicated)
+    #creates a second thread to stop the song after its duration time
+    #this thread goes to a different function
+    stop_thread = threading.Thread(target=_stop_after_preview_time, args=(song[PREVIEW_SONG_DURATION],))
+    stop_thread.start()
+
+#will attempt to stop the preview of a song
+def stop_preview():
+    try:
+        pygame.mixer.music.stop()
+    except:
+        print("unable to stop because nothing is playing! (or no mixer is created)")
+
+#multithread comes to this fuction to stop the song after a certain amount of time has passed
+def _stop_after_preview_time(song_durr:int):
+    time.sleep(song_durr)
+    pygame.mixer.music.stop()
+#window setup
+
+#root setup
 root = tk.Tk()
-root.title("Song Loader")
+root.title("MH Custom Song Loader")
 root.geometry("500x300")
 root.resizable(False,False)
 
-label = tk.Label(root, text="Custom Song Loader")
+#Labels
+label = tk.Label(root, text="METAL HELLSINGER CUSTOM SONG LOADER", font=("Helvetica", 16))
 label.pack(side=tk.TOP)
+hell_label = tk.Label(root,text="HELL", font=("Helvetica", 12))
+song_label = tk.Label(root,text="SONG", font=("Helvetica", 12))
 
-list_button = tk.Button(root, text="List", width=100, height=1, command=lambda:print_list())
+#Buttons
 attach_script_button = tk.Button(root,text="Attach", command=lambda:attach_script())
 deattach_script_button = tk.Button(root, text="Deattach", command=lambda:deattach_script())
-load_song_button = tk.Button(root, text="LOAD", command=lambda:load_level_without_prompts())
+load_song_button = tk.Button(root, text="LOAD", font=("Helvetica", 30), width=100, height=1, command=lambda:load_level_without_prompts())
+preview_button = tk.Button(root, text="Preview", command=lambda:preview_song())
+stop_preview_button = tk.Button(root, text="Stop", command=lambda:stop_preview())
 
+#dropdowns
+#songs
 selected_song = StringVar(root)
 selected_song.set(list(SONG_DICT.keys())[0])
 song_select_dropdown = tk.OptionMenu(root, selected_song, *SONG_DICT.keys(), command=on_select)
-
+#hells
 selected_hell = StringVar(root)
 selected_hell.set(list(HELL_LIST)[0])
 hell_select_dropdown = tk.OptionMenu(root, selected_hell, *HELL_LIST, command=on_select)
 
-list_button.pack(side=tk.BOTTOM)
+#positioning
 load_song_button.pack(side=tk.BOTTOM)
-attach_script_button.place(x=390,y=0)
-deattach_script_button.place(x=440,y=0)
-song_select_dropdown.pack(side=tk.LEFT)
-hell_select_dropdown.pack(side=tk.LEFT)
+attach_script_button.place(x=390,y=30)
+deattach_script_button.place(x=440,y=30)
+hell_label.place(x=0,y=65)
+hell_select_dropdown.place(x=0,y=90)
+song_label.place(x=0, y=130)
+song_select_dropdown.place(x=0,y=155)
+preview_button.pack(side = tk.RIGHT)
+stop_preview_button.pack(side = tk.RIGHT)
+
+chosen_level_config = [HELL_LIST[0], list(SONG_DICT.keys())[0]]
 
 root.mainloop()
 sys.exit()
-'''
+
 
 #main loop of the program
 while True:
