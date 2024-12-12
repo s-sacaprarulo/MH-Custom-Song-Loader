@@ -27,6 +27,7 @@ LIST_SONG_ACT_CODE = 1
 LIST_SONG_BPM = 2
 LIST_SONG_OFFSET = 3
 LIST_SONG_PREVIEW_SUBLIST = 4
+LIST_SONG_ARTIST = 5
 
 PREVIEW_SONG_FILE = 0
 PREVIEW_SONG_START_TIME = 1
@@ -36,22 +37,32 @@ INTRO_CONST:str = "{\"customLevelMusic\" : ["
 OUTRO_CONST:str = "]}"
 
 HELL_LIST:list[str] = ["Voke", "Stygia", "Yhelm", "Incaustis", "Gehenna", "Nihil", "Acheron", "Sheol"]
+HELL_DESCRIPTION:dict[list[str]] = {
+                            "Voke":"Voke was the spot I spent time closest to. So many years adjacent to all that frozen awfulness, the cold seeps into your bones. Can only imagine what it's like to be locked up there forever.",
+                            "Stygia":"Stygia. Lot of spiritual electricity, if you take my meaning, the kind the Judge just hrived on. Along with the lightning, there were some things in the shadows here who knew no master.",
+                            "Yhelm":"If you wanted to ask this Skull what real Hell would be for him, the I guess I'd say Yhelm. Souls here, cursed to be isolated from each other. Hard on us extroverts, I'll tell you that.",
+                            "Incaustis":"Back before the Unknown showed up this was a key location. Souls doomed for greed here mined eternally for brass and iron and whatnot, and a host of squabbling minor demons with aspirations of greatness fought each other for their piece.",
+                            "Gehenna":"Gehenna. Sinners here get locked up in tombs forever, guarded by demons. They say it's Hell for folks who uphold unjust laws, or hold up laws unjustly. I guess you could also say it's Hell for claustrophobic folks.",
+                            "Nihil":"Nihil was the kind of Hell that wasn't really supposed to exist, kinda airy and cold relative to some others. Stories said it was a kind of proto-Hell, split off from someplace in the Heavens... But demons lie, so the truth is hard to figure.",
+                            "Acheron":"In case you were wondering Acheron is pronounced \"Akkeron\". I know, we learn somethin' new every day. Wishful thinkin' maybe, but if we'd dealt different with them infernal cogwheels here, maybe our ride wouldn't have been so rough...",
+                            "Sheol":"Sheol ain't like any other Hell. All the others are made for suffering, but Sheol's sort of ground zero for it all. The Red Judge watches over everything from her throne here, waiting for the Unknown, and Heaven's watching. Plus through a quirk of design, it's also the last bulwark separating Heaven from Hell."
+}
 BASE_OFFSET:str = "0.06"
 
 #codes for the different types of songs
 NOACTBANKCODE:str = "{95972dee-fd3a-4a5c-9024-8f714883936e}"
 
 #key is the song name
-#list is the following: bank file, bank code, bpm, offset, [preview file, preview start time, preview duration]
-SONG_DICT:dict[list[str]] = {"Gold" : ["GoldBank",NOACTBANKCODE,"155", "0.16",["HellsingerSongs/Loi-Gold.ogg",42,40]],
-                             "Halo" : ["HaloBank",NOACTBANKCODE,"80",BASE_OFFSET,["HellsingerSongs/Beyonce-Halo.mp3", 50, 23]],
-                             "Strangers" : ["StrangersBank",NOACTBANKCODE,"150",BASE_OFFSET,["HellsingerSongs/Dragonforce-Strangers.mp3",51,27]],
-                             "Night Fall" : ["NightFallBank",NOACTBANKCODE,"192","0.3",["HellsingerSongs/Blind_Guardian-NightFall.mp3",75,23]],
-                             "If You Cant Hang" : ["IfYouCantHangBank",NOACTBANKCODE,"192","0.6",["HellsingerSongs/Sleeping_With_Sirens-If_You_Can't_Hang.mp3",75,25]],
-                             "The Things We Believe In" : ["TheThingsWeBelieveInBank",NOACTBANKCODE,"122",BASE_OFFSET,["HellsingerSongs/Order_Organ-The_Things_we_believe_in.ogg",89,33]],
-                             "Hope Is The Thing With Feathers" : ["HopeIsTheThingWithFeathersBank",NOACTBANKCODE,"128",BASE_OFFSET,["HellsingerSongs/Shida_Aruya-Hope_Is_the_Thing_With_Feathers.mp3",59,31]], #as elliott wanted >:(
-                             "Crab Rave" : ["CrabRaveBank", NOACTBANKCODE, "125", BASE_OFFSET,["HellsingerSongs/Noisestorm-Crab_Rave.mp3",74,33]],
-                             "Weak" : ["WeakBank", NOACTBANKCODE, "124", BASE_OFFSET,["HellsingerSongs/AJR-Weak.ogg",32,32]]}
+#list is the following: bank file, bank code, bpm, offset, [preview file, preview start time, preview duration], Artist
+SONG_DICT:dict[list[str]] = {"Gold" : ["GoldBank",NOACTBANKCODE,"155", "0.16",["HellsingerSongs/Loi-Gold.ogg",42,40], "Loi"],
+                             "Halo" : ["HaloBank",NOACTBANKCODE,"80",BASE_OFFSET,["HellsingerSongs/Beyonce-Halo.mp3", 50, 23], "Beyonce"],
+                             "Strangers" : ["StrangersBank",NOACTBANKCODE,"150",BASE_OFFSET,["HellsingerSongs/Dragonforce-Strangers.mp3",51,27], "Dragonforce"],
+                             "Night Fall" : ["NightFallBank",NOACTBANKCODE,"192","0.3",["HellsingerSongs/Blind_Guardian-NightFall.mp3",75,23],"Blind Guardian"],
+                             "If You Cant Hang" : ["IfYouCantHangBank",NOACTBANKCODE,"192","0.6",["HellsingerSongs/Sleeping_With_Sirens-If_You_Can't_Hang.mp3",75,25], "Sleeping With Sirens"],
+                             "The Things We Believe In" : ["TheThingsWeBelieveInBank",NOACTBANKCODE,"122",BASE_OFFSET,["HellsingerSongs/Order_Organ-The_Things_we_believe_in.ogg",89,33], "Order Organ"],
+                             "Hope Is The Thing With Feathers" : ["HopeIsTheThingWithFeathersBank",NOACTBANKCODE,"128",BASE_OFFSET,["HellsingerSongs/Shida_Aruya-Hope_Is_the_Thing_With_Feathers.mp3",59,31], "Shida Aruya"], #as elliott wanted >:(
+                             "Crab Rave" : ["CrabRaveBank", NOACTBANKCODE, "125", BASE_OFFSET,["HellsingerSongs/Noisestorm-Crab_Rave.mp3",74,33], "Noisestorm"],
+                             "Weak" : ["WeakBank", NOACTBANKCODE, "124", BASE_OFFSET,["HellsingerSongs/AJR-Weak.ogg",32,32], "AJR"]}
 
 ACTION_DICT:dict = {"load" : lambda : load_level(),
                     "kill" : lambda : kill(),
@@ -192,8 +203,10 @@ def kill():
 def on_select(selected_song):
     if selected_song in HELL_LIST:
         chosen_level_config[0] = selected_song
+        update_hell_stats()
     elif selected_song in SONG_DICT:
         chosen_level_config[1] = selected_song
+        update_song_stats()
 
 #When you hit the load button
 def load_level_without_prompts():
@@ -250,6 +263,16 @@ def _stop_after_preview_time(song_durr:int):
         pygame.mixer.music.stop()
 #window setup
 
+def update_song_stats():
+    song = SONG_DICT.get(chosen_level_config[1])
+    song_BPM_label.config(text=f"BPM: {song[LIST_SONG_BPM]}")
+    song_artist_label.config(text=f"Author: {song[LIST_SONG_ARTIST]}")
+
+def update_hell_stats():
+    hell=chosen_level_config[0]
+    hell_name_label.config(text=hell)
+    hell_description_text_label.config(text=HELL_DESCRIPTION.get(hell))
+
 #root setup
 root = tk.Tk()
 root.title("MH Custom Song Loader")
@@ -261,6 +284,12 @@ label = tk.Label(root, text="METAL HELLSINGER CUSTOM SONG LOADER", font=("Helvet
 label.pack(side=tk.TOP)
 hell_label = tk.Label(root,text="HELL", font=("Helvetica", 12))
 song_label = tk.Label(root,text="SONG", font=("Helvetica", 12))
+song_options_label = tk.Label(root, text="SONG OPTIONS", font=("Helvetica", 10))
+song_stats_label = tk.Label(root, text="SONG STATS", font=("Helvetica", 10))
+song_BPM_label = tk.Label(root, text="BPM: n/a")
+song_artist_label = tk.Label(root, text="Author: n/a")
+hell_name_label = tk.Label(root, text="n/a", font=("Helvetica", 20), anchor="center")
+hell_description_text_label = tk.Label(root, text="n/a",wraplength=250)
 
 #Buttons
 attach_script_button = tk.Button(root,text="Attach", command=lambda:attach_script())
@@ -287,12 +316,20 @@ hell_label.place(x=0,y=65)
 hell_select_dropdown.place(x=0,y=90)
 song_label.place(x=0, y=130)
 song_select_dropdown.place(x=0,y=155)
-preview_button.pack(side = tk.RIGHT)
-stop_preview_button.pack(side = tk.RIGHT)
+preview_button.place(x=400,y=100)
+stop_preview_button.place(x=460,y=100)
+song_options_label.place(x=395,y=80)
+song_stats_label.place(x=400,y=140)
+song_artist_label.place(x=370, y=160)
+song_BPM_label.place(x=370, y=180)
+hell_name_label.place(x=180,y=50)
+hell_description_text_label.place(x=100,y=100)
 
 chosen_level_config = [HELL_LIST[0], list(SONG_DICT.keys())[0]]
 playing_preview_song = [""]
 
+update_song_stats()
+update_hell_stats()
 root.mainloop()
 sys.exit()
 
