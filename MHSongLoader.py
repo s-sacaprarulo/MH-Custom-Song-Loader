@@ -18,9 +18,9 @@ PC_DISABLED_FILE = "C:/Program Files (x86)/Steam/steamapps/common/Metal Hellsing
 TEST_ENABLED_FILE = "Test.json"
 TEST_DISABLED_FILE = "in_Test.json"
 
-JSON_FILE_LOCATION:str = PC_HELLSINGER_FILE_PATH
-FILE_NAME:str = PC_ENABLED_FILE
-DEACTIVATED_FILE_NAME:str = PC_DISABLED_FILE
+JSON_FILE_LOCATION:str = SCHOOL_FILE_PATH
+FILE_NAME:str = TEST_ENABLED_FILE
+DEACTIVATED_FILE_NAME:str = TEST_DISABLED_FILE
 
 LIST_SONG_BANK_FILE = 0
 LIST_SONG_ACT_CODE = 1
@@ -32,6 +32,8 @@ LIST_SONG_ARTIST = 5
 PREVIEW_SONG_FILE = 0
 PREVIEW_SONG_START_TIME = 1
 PREVIEW_SONG_DURATION = 2
+
+
 
 INTRO_CONST:str = "{\"customLevelMusic\" : ["
 OUTRO_CONST:str = "]}"
@@ -159,6 +161,8 @@ def attach_script():
             with open(DEACTIVATED_FILE_NAME, "r") as file:
                 pass
         except Exception as e:
+            stop_thread = threading.Thread(target=display_message_text, args=())
+            stop_thread.start()
             attach_outcome_label.config(text=f"Already Attached!")
             return
         os.rename(DEACTIVATED_FILE_NAME, FILE_NAME)
@@ -271,6 +275,13 @@ def update_hell_stats():
     hell=chosen_level_config[0]
     hell_name_label.config(text=hell)
     hell_description_text_label.config(text=HELL_DESCRIPTION.get(hell))
+
+def display_message_text(label:tk.Label, duration:float, message:str):
+    base_time = time.time()
+    elapsed_time = time.time() - base_time
+    while elapsed_time < duration:
+        label.config(text=message)
+    label.config(text="")
 
 #root setup
 root = tk.Tk()
