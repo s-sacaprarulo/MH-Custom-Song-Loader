@@ -47,10 +47,10 @@ SONG_DICT:dict[list[str]] = {"Gold" : ["GoldBank",NOACTBANKCODE,"155", "0.16",["
                              "Halo" : ["HaloBank",NOACTBANKCODE,"80",BASE_OFFSET,["HellsingerSongs/Beyonce-Halo.mp3", 50, 23]],
                              "Strangers" : ["StrangersBank",NOACTBANKCODE,"150",BASE_OFFSET,["HellsingerSongs/Dragonforce-Strangers.mp3",51,27]],
                              "Night Fall" : ["NightFallBank",NOACTBANKCODE,"192","0.3",["HellsingerSongs/Blind_Guardian-NightFall.mp3",75,23]],
-                             "If You Cant Hang" : ["IfYouCantHangBank",NOACTBANKCODE,"192","0.6",["HellsingerSongs/Sleeping_With_Sirens-If_You_Can't_Hang.mp3",75,31]],
+                             "If You Cant Hang" : ["IfYouCantHangBank",NOACTBANKCODE,"192","0.6",["HellsingerSongs/Sleeping_With_Sirens-If_You_Can't_Hang.mp3",75,25]],
                              "The Things We Believe In" : ["TheThingsWeBelieveInBank",NOACTBANKCODE,"122",BASE_OFFSET,["HellsingerSongs/Order_Organ-The_Things_we_believe_in.ogg",89,33]],
                              "Hope Is The Thing With Feathers" : ["HopeIsTheThingWithFeathersBank",NOACTBANKCODE,"128",BASE_OFFSET,["HellsingerSongs/Shida_Aruya-Hope_Is_the_Thing_With_Feathers.mp3",59,31]], #as elliott wanted >:(
-                             "Crab Rave" : ["CrabRaveBank", NOACTBANKCODE, "125", BASE_OFFSET,["HellsingerSongs/Noisestorm-Crab_Rave.mp3",74,31]],
+                             "Crab Rave" : ["CrabRaveBank", NOACTBANKCODE, "125", BASE_OFFSET,["HellsingerSongs/Noisestorm-Crab_Rave.mp3",74,33]],
                              "Weak" : ["WeakBank", NOACTBANKCODE, "124", BASE_OFFSET,["HellsingerSongs/AJR-Weak.ogg",32,32]]}
 
 ACTION_DICT:dict = {"load" : lambda : load_level(),
