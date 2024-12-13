@@ -18,9 +18,9 @@ PC_DISABLED_FILE = "C:/Program Files (x86)/Steam/steamapps/common/Metal Hellsing
 TEST_ENABLED_FILE = "Test.json"
 TEST_DISABLED_FILE = "in_Test.json"
 
-JSON_FILE_LOCATION:str = SCHOOL_FILE_PATH
-FILE_NAME:str = TEST_ENABLED_FILE
-DEACTIVATED_FILE_NAME:str = TEST_DISABLED_FILE
+JSON_FILE_LOCATION:str = PC_HELLSINGER_FILE_PATH
+FILE_NAME:str = PC_ENABLED_FILE
+DEACTIVATED_FILE_NAME:str = PC_DISABLED_FILE
 
 LIST_SONG_BANK_FILE = 0
 LIST_SONG_ACT_CODE = 1
@@ -161,11 +161,12 @@ def attach_script():
             with open(DEACTIVATED_FILE_NAME, "r") as file:
                 pass
         except Exception as e:
-            stop_thread = threading.Thread(target=display_message_text, args=())
-            stop_thread.start()
+            #stop_thread = threading.Thread(target=display_message_text, args=())
+            #stop_thread.start()
             attach_outcome_label.config(text=f"Already Attached!")
             return
         os.rename(DEACTIVATED_FILE_NAME, FILE_NAME)
+        display_message_text(attach_outcome_label,2,"Successfully Attached!")
         attach_outcome_label.config(text=f"Success!!!")
     except Exception as e:
         attach_outcome_label.config(text=f"Failed with error {e}")
@@ -203,6 +204,8 @@ def on_select(selected_song):
     elif selected_song in SONG_DICT:
         chosen_level_config[1] = selected_song
         update_song_stats()
+        if auto_preview_song.get():
+            preview_song()
 
 #When you hit the load button
 def load_level_without_prompts():
@@ -235,7 +238,9 @@ def preview_song():
     song:list[str] = SONG_DICT.get(chosen_level_config[1])[LIST_SONG_PREVIEW_SUBLIST]
     #plays the preview
     pygame.mixer.init()
-    set_volume(preview_volume_slider.get())
+    #set_volume(preview_volume_slider.get())
+    fade_thread = threading.Thread(target=_fade_music_in)
+    fade_thread.start()
     pygame.mixer.music.load(song[PREVIEW_SONG_FILE])
     pygame.mixer.music.play(start=song[PREVIEW_SONG_START_TIME])
     playing_preview_song[0] = chosen_level_config[1]
@@ -260,6 +265,13 @@ def _stop_after_preview_time(song_durr:int):
         pygame.mixer.music.stop()
 #window setup
 
+def _fade_music_in():
+    audio_mult = 0
+    while audio_mult < 1.1:
+        pygame.mixer.music.set_volume(float(preview_volume_slider.get()/100) * audio_mult)
+        time.sleep(0.1)
+        audio_mult += 0.1
+
 def set_volume(volume):
     try:
         pygame.mixer.music.set_volume(float(volume)/100)
@@ -277,10 +289,12 @@ def update_hell_stats():
     hell_description_text_label.config(text=HELL_DESCRIPTION.get(hell))
 
 def display_message_text(label:tk.Label, duration:float, message:str):
-    base_time = time.time()
-    elapsed_time = time.time() - base_time
-    while elapsed_time < duration:
-        label.config(text=message)
+    thread = threading.Thread(target=_actually_display_label, args=(label,duration,message,))
+    thread.start()
+
+def _actually_display_label(label, duration, message):
+    label.config(text=message) 
+    time.sleep(duration)
     label.config(text="")
 
 #root setup
@@ -324,6 +338,9 @@ hell_select_dropdown = tk.OptionMenu(root, selected_hell, *HELL_LIST, command=on
 #preview volume slider
 preview_volume_slider = tk.Scale(root, from_=100, to=0,orient="vertical",command=set_volume,width=10, length=100)
 
+#checkbox
+auto_preview_song = tk.BooleanVar()
+auto_preview_song_checkbox = tk.Checkbutton(root, text="Autoplay", variable=auto_preview_song, onvalue=True, offvalue=False)
 #positioning
 load_song_button.pack(side=tk.BOTTOM)
 attach_script_button.place(x=3,y=30)
@@ -344,6 +361,7 @@ preview_volume_slider.set(25)
 preview_volume_slider.place(x=352,y=57)
 volume_slider_label.place(x=364, y=40)
 attach_outcome_label.place(x=112,y=33)
+auto_preview_song_checkbox.place(x=400,y=50)
 
 chosen_level_config = [HELL_LIST[0], list(SONG_DICT.keys())[0]]
 playing_preview_song = [""]
