@@ -7,8 +7,7 @@ import pygame
 import threading
 
 #file paths
-SCHOOL_FILE_PATH = "C:/Users/1042113/Desktop/Cloned Repositories/ForFun/Test.json"
-MAIN_PC_TEST_FILE_PATH = "C:/Users/santi/OneDrive/Desktop/Cloned Repositories/ForFun/Test.json"
+TEST_FILE_PATH = "Test.json"
 PC_HELLSINGER_FILE_PATH = "C:/Program Files (x86)/Steam/steamapps/common/Metal Hellsinger/Metal_Data/StreamingAssets/customsongs.json"
 VR_HELLSINGER_FILE_PATH = "C:/Program Files (x86)/Steam/steamapps/common/MetalHellsingerVR/MetalVR_Data/StreamingAssets/customsongs.json"
 
@@ -18,9 +17,9 @@ PC_DISABLED_FILE = "C:/Program Files (x86)/Steam/steamapps/common/Metal Hellsing
 TEST_ENABLED_FILE = "Test.json"
 TEST_DISABLED_FILE = "in_Test.json"
 
-JSON_FILE_LOCATION:str = PC_HELLSINGER_FILE_PATH
-FILE_NAME:str = PC_ENABLED_FILE
-DEACTIVATED_FILE_NAME:str = PC_DISABLED_FILE
+JSON_FILE_LOCATION:str = TEST_FILE_PATH
+FILE_NAME:str = TEST_ENABLED_FILE
+DEACTIVATED_FILE_NAME:str = TEST_DISABLED_FILE
 
 LIST_SONG_BANK_FILE = 0
 LIST_SONG_ACT_CODE = 1
@@ -40,14 +39,14 @@ OUTRO_CONST:str = "]}"
 
 HELL_LIST:list[str] = ["Voke", "Stygia", "Yhelm", "Incaustis", "Gehenna", "Nihil", "Acheron", "Sheol"]
 HELL_DESCRIPTION:dict[list[str]] = {
-                            "Voke":"Voke was the spot I spent time closest to. So many years adjacent to all that frozen awfulness, the cold seeps into your bones. Can only imagine what it's like to be locked up there forever.",
-                            "Stygia":"Stygia. Lot of spiritual electricity, if you take my meaning, the kind the Judge just hrived on. Along with the lightning, there were some things in the shadows here who knew no master.",
-                            "Yhelm":"If you wanted to ask this Skull what real Hell would be for him, then I guess I'd say Yhelm. Souls here, cursed to be isolated from each other. Hard on us extroverts, I'll tell you that.",
+                            "Voke"     :"Voke was the spot I spent time closest to. So many years adjacent to all that frozen awfulness, the cold seeps into your bones. Can only imagine what it's like to be locked up there forever.",
+                            "Stygia"   :"Stygia. Lot of spiritual electricity, if you take my meaning, the kind the Judge just hrived on. Along with the lightning, there were some things in the shadows here who knew no master.",
+                            "Yhelm"    :"If you wanted to ask this Skull what real Hell would be for him, then I guess I'd say Yhelm. Souls here, cursed to be isolated from each other. Hard on us extroverts, I'll tell you that.",
                             "Incaustis":"Back before the Unknown showed up this was a key location. Souls doomed for greed here mined eternally for brass and iron and whatnot, and a host of squabbling minor demons with aspirations of greatness fought each other for their piece.",
-                            "Gehenna":"Gehenna. Sinners here get locked up in tombs forever, guarded by demons. They say it's Hell for folks who uphold unjust laws, or hold up laws unjustly. I guess you could also say it's Hell for claustrophobic folks.",
-                            "Nihil":"Nihil was the kind of Hell that wasn't really supposed to exist, kinda airy and cold relative to some others. Stories said it was a kind of proto-Hell, split off from someplace in the Heavens... But demons lie, so the truth is hard to figure.",
-                            "Acheron":"In case you were wondering Acheron is pronounced \"Akkeron\". I know, we learn somethin' new every day. Wishful thinkin' maybe, but if we'd dealt different with them infernal cogwheels here, maybe our ride wouldn't have been so rough...",
-                            "Sheol":"Sheol ain't like any other Hell. All the others are made for suffering, but Sheol's sort of ground zero for it all. The Red Judge watches over everything from her throne here, waiting for the Unknown, and Heaven's watching. Plus through a quirk of design, it's also the last bulwark separating Heaven from Hell."
+                            "Gehenna"  :"Gehenna. Sinners here get locked up in tombs forever, guarded by demons. They say it's Hell for folks who uphold unjust laws, or hold up laws unjustly. I guess you could also say it's Hell for claustrophobic folks.",
+                            "Nihil"    :"Nihil was the kind of Hell that wasn't really supposed to exist, kinda airy and cold relative to some others. Stories said it was a kind of proto-Hell, split off from someplace in the Heavens... But demons lie, so the truth is hard to figure.",
+                            "Acheron"  :"In case you were wondering Acheron is pronounced \"Akkeron\". I know, we learn somethin' new every day. Wishful thinkin' maybe, but if we'd dealt different with them infernal cogwheels here, maybe our ride wouldn't have been so rough...",
+                            "Sheol"    :"Sheol ain't like any other Hell. All the others are made for suffering, but Sheol's sort of ground zero for it all. The Red Judge watches over everything from her throne here, waiting for the Unknown, and Heaven's watching. Plus through a quirk of design, it's also the last bulwark separating Heaven from Hell."
 }
 BASE_OFFSET:str = "0.06"
 
@@ -296,6 +295,8 @@ def _actually_display_label(label, duration, message):
     label.config(text=message) 
     time.sleep(duration)
     label.config(text="")
+
+
 
 #root setup
 root = tk.Tk()
