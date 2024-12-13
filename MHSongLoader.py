@@ -42,7 +42,7 @@ OUTRO_CONST:str = "]}"
 HELL_LIST:list[str] = ["Voke", "Stygia", "Yhelm", "Incaustis", "Gehenna", "Nihil", "Acheron", "Sheol"]
 HELL_DESCRIPTION:dict[list[str]] = {
                             "Voke"     :"Voke was the spot I spent time closest to. So many years adjacent to all that frozen awfulness, the cold seeps into your bones. Can only imagine what it's like to be locked up there forever.",
-                            "Stygia"   :"Stygia. Lot of spiritual electricity, if you take my meaning, the kind the Judge just hrived on. Along with the lightning, there were some things in the shadows here who knew no master.",
+                            "Stygia"   :"Stygia. Lot of spiritual electricity, if you take my meaning, the kind the Judge just thrived on. Along with the lightning, there were some things in the shadows here who knew no master.",
                             "Yhelm"    :"If you wanted to ask this Skull what real Hell would be for him, then I guess I'd say Yhelm. Souls here, cursed to be isolated from each other. Hard on us extroverts, I'll tell you that.",
                             "Incaustis":"Back before the Unknown showed up this was a key location. Souls doomed for greed here mined eternally for brass and iron and whatnot, and a host of squabbling minor demons with aspirations of greatness fought each other for their piece.",
                             "Gehenna"  :"Gehenna. Sinners here get locked up in tombs forever, guarded by demons. They say it's Hell for folks who uphold unjust laws, or hold up laws unjustly. I guess you could also say it's Hell for claustrophobic folks.",
