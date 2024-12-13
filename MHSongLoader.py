@@ -32,7 +32,8 @@ PREVIEW_SONG_FILE = 0
 PREVIEW_SONG_START_TIME = 1
 PREVIEW_SONG_DURATION = 2
 
-
+SUCCESS_COLOR = "#00a616"
+FAILED_COLOR = "red"
 
 INTRO_CONST:str = "{\"customLevelMusic\" : ["
 OUTRO_CONST:str = "]}"
@@ -155,35 +156,38 @@ def load_level():
 #Attaches the customsongs.json file to Hellsinger by renaming the file back to 'customsongs.json'
 #This is so modded songs can be played once more without resetting the game
 def attach_script():
+    start_time = time.time()
     try:
         try:
-            with open(DEACTIVATED_FILE_NAME, "r") as file:
-                pass
+            with open(FILE_NAME, "r") as file:
+                display_message_text(attach_outcome_label,2,f"Failed in {(time.time() - start_time):.2f}s because the loader is already attached!", FAILED_COLOR)
+                attachment_text[0] = "already attached"
+                return
         except Exception as e:
-            #stop_thread = threading.Thread(target=display_message_text, args=())
-            #stop_thread.start()
-            attach_outcome_label.config(text=f"Already Attached!")
-            return
-        os.rename(DEACTIVATED_FILE_NAME, FILE_NAME)
-        display_message_text(attach_outcome_label,2,"Successfully Attached!")
-        attach_outcome_label.config(text=f"Success!!!")
+            os.rename(DEACTIVATED_FILE_NAME, FILE_NAME)
+            display_message_text(attach_outcome_label,2,f"Successfully Attached in {(time.time() - start_time):.2f}s!", SUCCESS_COLOR)
+            attachment_text[0] = "attached"
     except Exception as e:
-        attach_outcome_label.config(text=f"Failed with error {e}")
+        display_message_text(attach_outcome_label,6,f"Failed in {(time.time() - start_time):.2f}s with error \"{e}\"!", FAILED_COLOR)
+        attachment_text[0] = "attach error"
 
 #Deattaches the customsongs.json file from Hellsinger by renaming the file
 #This is so vanila songs can be played without resetting the game
 def deattach_script():
+    start_time = time.time()
     try:
         try:
-            with open(FILE_NAME, "r") as file:
-                pass
+            with open(DEACTIVATED_FILE_NAME, "r") as file:
+                display_message_text(attach_outcome_label,2,f"Failed in {(time.time() - start_time):.2f}s because the loader is already deattached!", FAILED_COLOR)
+                attachment_text[0] = "already deattached"
+                return
         except Exception as e:
-            attach_outcome_label.config(text=f"Already Deattached!")
-            return
-        os.rename(FILE_NAME, DEACTIVATED_FILE_NAME)
-        attach_outcome_label.config(text=f"Success!!!")
+            os.rename(FILE_NAME, DEACTIVATED_FILE_NAME)
+            display_message_text(attach_outcome_label,2,f"Successfully Deattached in {(time.time() - start_time):.2f}s!", SUCCESS_COLOR)
+            attachment_text[0] = "deattached"
     except Exception as e:
-        attach_outcome_label.config(text=f"Failed with error {e}")
+        display_message_text(attach_outcome_label,6,f"Failed in {(time.time() - start_time):.2f}s with error \"{e}\"!", FAILED_COLOR)
+        attachment_text[0] = "deattach error"
 
 #Prints out the hells and songs
 def print_list():
@@ -221,11 +225,18 @@ def load_level_without_prompts():
         with open(JSON_FILE_LOCATION, "w") as file:
             file.write(INTRO_CONST + songs_string + OUTRO_CONST)
         time_end = time.time()
-        print(f"Operation completed successfully in {time_end - time_start} seconds!")
+        if chosen_level_config[0] == "Sheol":
+            display_message_text(loaded_label, 3, f"Good Luck", "#690000")
+        else:
+            display_message_text(loaded_label, 3, f"Successfully loaded Song \"{chosen_level_config[1]}\" into Hell \"{chosen_level_config[0]}\" in {time_end-time_start:.2f} seconds!", SUCCESS_COLOR)
     except Exception as e:
         time_end = time.time()
-        print(f"Operation failed in {time_end - time_start} seconds with excpetion {e}\n(This may be because the custom songs are not attached run 'attach' to attach them. Or the file location may be incorrect)")
-
+        try:
+            with open(DEACTIVATED_FILE_NAME, "r") as file:
+                display_message_text(loaded_label, 5, f"Failed load in {time_end - time_start:.2f}s because the script is not attached!", FAILED_COLOR)
+                return
+        except:
+            display_message_text(loaded_label, 10, f"Failed load in {time_end-time_start:.2f}s with error \"{e}\"", FAILED_COLOR)
 #Preview song
 def preview_song():
     # will stop the previous audio track if it exists
@@ -287,14 +298,14 @@ def update_hell_stats():
     hell_name_label.config(text=hell)
     hell_description_text_label.config(text=HELL_DESCRIPTION.get(hell))
 
-def display_message_text(label:tk.Label, duration:float, message:str):
-    thread = threading.Thread(target=_actually_display_label, args=(label,duration,message,))
+def display_message_text(label:tk.Label, duration:float, message:str, text_color:str = "black"):
+    thread = threading.Thread(target=_actually_display_label, args=(label,duration,message,text_color))
     thread.start()
 
-def _actually_display_label(label, duration, message):
-    label.config(text=message) 
+def _actually_display_label(label:tk.Label, duration:float, message:str, text_color:str):
+    label.config(text=message,fg=text_color) 
     time.sleep(duration)
-    label.config(text="")
+    label.config(text="",fg="black")
 
 
 
@@ -319,6 +330,7 @@ hell_name_label = tk.Label(root, text="n/a", font=("Helvetica", 20), anchor="cen
 hell_description_text_label = tk.Label(root, text="n/a",wraplength=250)
 volume_slider_label = tk.Label(root, text="Volume", font=("Helvetica", 7))
 attach_outcome_label = tk.Label(root, text="")
+loaded_label = tk.Label(root, text="", font=("Helvetica", 11),fg="green")
 
 #Buttons
 attach_script_button = tk.Button(root,text="Attach", command=lambda:attach_script())
@@ -357,15 +369,17 @@ song_stats_label.place(x=400,y=140)
 song_artist_label.place(x=370, y=160)
 song_BPM_label.place(x=370, y=180)
 hell_name_label.place(x=180,y=50)
-hell_description_text_label.place(x=100,y=100)
+hell_description_text_label.place(x=100,y=90)
 preview_volume_slider.set(25)
 preview_volume_slider.place(x=352,y=57)
 volume_slider_label.place(x=364, y=40)
 attach_outcome_label.place(x=112,y=33)
 auto_preview_song_checkbox.place(x=400,y=50)
+loaded_label.pack(side=tk.BOTTOM)
 
 chosen_level_config = [HELL_LIST[0], list(SONG_DICT.keys())[0]]
 playing_preview_song = [""]
+attachment_text:list[str] = [""]
 
 update_song_stats()
 update_hell_stats()
