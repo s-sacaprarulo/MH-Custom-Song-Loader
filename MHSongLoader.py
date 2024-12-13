@@ -34,6 +34,7 @@ PREVIEW_SONG_DURATION = 2
 
 SUCCESS_COLOR = "#00a616"
 FAILED_COLOR = "red"
+BACKGROUND_COLOR = "#380000"
 
 INTRO_CONST:str = "{\"customLevelMusic\" : ["
 OUTRO_CONST:str = "]}"
@@ -316,44 +317,47 @@ root.geometry("500x300")
 root.resizable(False,False)
 root.iconphoto(False,tk.PhotoImage(file="Icon.png"))
 root.wm_attributes("-topmost", 1)
+root.config(bg=BACKGROUND_COLOR)
 
 #Labels
-label = tk.Label(root, text="METAL HELLSINGER CUSTOM SONG LOADER", font=("Helvetica", 16))
+label = tk.Label(root, text="METAL HELLSINGER CUSTOM SONG LOADER", font=("Helvetica", 16), bg=BACKGROUND_COLOR, fg="#ff4000")
 label.pack(side=tk.TOP)
-hell_label = tk.Label(root,text="HELL", font=("Helvetica", 12))
-song_label = tk.Label(root,text="SONG", font=("Helvetica", 12))
-song_options_label = tk.Label(root, text="SONG OPTIONS", font=("Helvetica", 10))
-song_stats_label = tk.Label(root, text="SONG STATS", font=("Helvetica", 10))
-song_BPM_label = tk.Label(root, text="BPM: n/a")
-song_artist_label = tk.Label(root, text="Author: n/a")
-hell_name_label = tk.Label(root, text="n/a", font=("Helvetica", 20), anchor="center")
-hell_description_text_label = tk.Label(root, text="n/a",wraplength=250)
-volume_slider_label = tk.Label(root, text="Volume", font=("Helvetica", 7))
-attach_outcome_label = tk.Label(root, text="")
-loaded_label = tk.Label(root, text="", font=("Helvetica", 11),fg="green")
+hell_label = tk.Label(root,text="HELL", font=("Helvetica", 12), bg=BACKGROUND_COLOR, fg="#c90000")
+song_label = tk.Label(root,text="SONG", font=("Helvetica", 12), bg=BACKGROUND_COLOR, fg="#c90000")
+song_options_label = tk.Label(root, text="SONG OPTIONS", font=("Helvetica", 10), bg=BACKGROUND_COLOR,fg="#c90000")
+song_stats_label = tk.Label(root, text="SONG STATS", font=("Helvetica", 10), bg=BACKGROUND_COLOR,fg="#c90000")
+song_BPM_label = tk.Label(root, text="BPM: n/a", bg=BACKGROUND_COLOR,fg="#ff602b")
+song_artist_label = tk.Label(root, text="Author: n/a", bg=BACKGROUND_COLOR,fg="#ff602b")
+hell_name_label = tk.Label(root, text="n/a", font=("Helvetica", 20), anchor="center", bg=BACKGROUND_COLOR,fg="#ff0000")
+hell_description_text_label = tk.Label(root, text="n/a",wraplength=250, bg=BACKGROUND_COLOR, fg="#de0000")
+volume_slider_label = tk.Label(root, text="Volume", font=("Helvetica", 7),bg=BACKGROUND_COLOR, fg="#ff602b")
+attach_outcome_label = tk.Label(root, text="",bg=BACKGROUND_COLOR) #dont change color
+loaded_label = tk.Label(root, text="", font=("Helvetica", 11),fg="green",bg=BACKGROUND_COLOR) #dont change color
 
 #Buttons
-attach_script_button = tk.Button(root,text="Attach", command=lambda:attach_script())
-deattach_script_button = tk.Button(root, text="Deattach", command=lambda:deattach_script())
-load_song_button = tk.Button(root, text="LOAD", font=("Helvetica", 30), width=100, height=1, command=lambda:load_level_without_prompts())
-preview_button = tk.Button(root, text="Preview", command=lambda:preview_song())
-stop_preview_button = tk.Button(root, text="Stop", command=lambda:stop_preview())
+attach_script_button = tk.Button(root,text="Attach", command=lambda:attach_script(),bg=BACKGROUND_COLOR, fg="#d40000")
+deattach_script_button = tk.Button(root, text="Deattach", command=lambda:deattach_script(), bg=BACKGROUND_COLOR, fg = "#d40000")
+load_song_button = tk.Button(root, text="LOAD", font=("Helvetica", 30), width=100, height=1, command=lambda:load_level_without_prompts(), bg="#610000", fg="#ff4000")
+preview_button = tk.Button(root, text="Preview", command=lambda:preview_song(), bg=BACKGROUND_COLOR, fg="#d40000")
+stop_preview_button = tk.Button(root, text="Stop", command=lambda:stop_preview(), bg=BACKGROUND_COLOR, fg="#d40000")
 
 #dropdowns
 #songs
 selected_song = StringVar(root)
 selected_song.set(list(SONG_DICT.keys())[0])
 song_select_dropdown = tk.OptionMenu(root, selected_song, *SONG_DICT.keys(), command=on_select)
+song_select_dropdown.config(bg=BACKGROUND_COLOR, fg="#ff4719")
 #hells
 selected_hell = StringVar(root)
 selected_hell.set(list(HELL_LIST)[0])
 hell_select_dropdown = tk.OptionMenu(root, selected_hell, *HELL_LIST, command=on_select)
+hell_select_dropdown.config(bg=BACKGROUND_COLOR, fg="#ff4719")
 #preview volume slider
-preview_volume_slider = tk.Scale(root, from_=100, to=0,orient="vertical",command=set_volume,width=10, length=100)
+preview_volume_slider = tk.Scale(root, from_=100, to=0,orient="vertical",command=set_volume,width=10, length=100,bg=BACKGROUND_COLOR,fg="#ff602b")
 
 #checkbox
 auto_preview_song = tk.BooleanVar()
-auto_preview_song_checkbox = tk.Checkbutton(root, text="Autoplay", variable=auto_preview_song, onvalue=True, offvalue=False)
+auto_preview_song_checkbox = tk.Checkbutton(root, text="Autoplay", variable=auto_preview_song, onvalue=True, offvalue=False, bg=BACKGROUND_COLOR,fg="#ff602b")
 #positioning
 load_song_button.pack(side=tk.BOTTOM)
 attach_script_button.place(x=3,y=30)
