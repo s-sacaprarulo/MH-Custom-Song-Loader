@@ -17,9 +17,9 @@ PC_DISABLED_FILE = "C:/Program Files (x86)/Steam/steamapps/common/Metal Hellsing
 TEST_ENABLED_FILE = "Test.json"
 TEST_DISABLED_FILE = "in_Test.json"
 
-JSON_FILE_LOCATION:str = TEST_FILE_PATH
-FILE_NAME:str = TEST_ENABLED_FILE
-DEACTIVATED_FILE_NAME:str = TEST_DISABLED_FILE
+JSON_FILE_LOCATION:str = PC_HELLSINGER_FILE_PATH
+FILE_NAME:str = PC_ENABLED_FILE 
+DEACTIVATED_FILE_NAME:str = PC_DISABLED_FILE
 
 LIST_SONG_BANK_FILE = 0
 LIST_SONG_ACT_CODE = 1
@@ -65,7 +65,10 @@ SONG_DICT:dict[list[str]] = {"Gold" : ["GoldBank",NOACTBANKCODE,"155", "0.16",["
                              "The Things We Believe In" : ["TheThingsWeBelieveInBank",NOACTBANKCODE,"122",BASE_OFFSET,["HellsingerSongs/Order_Organ-The_Things_we_believe_in.ogg",89,33], "Order Organ"],
                              "Hope Is The Thing With Feathers" : ["HopeIsTheThingWithFeathersBank",NOACTBANKCODE,"128",BASE_OFFSET,["HellsingerSongs/Shida_Aruya-Hope_Is_the_Thing_With_Feathers.mp3",59,31], "Shida Aruya"], #as elliott wanted >:(
                              "Crab Rave" : ["CrabRaveBank", NOACTBANKCODE, "125", BASE_OFFSET,["HellsingerSongs/Noisestorm-Crab_Rave.mp3",74,33], "Noisestorm"],
-                             "Weak" : ["WeakBank", NOACTBANKCODE, "124", BASE_OFFSET,["HellsingerSongs/AJR-Weak.ogg",32,32], "AJR"]}
+                             "Weak" : ["WeakBank", NOACTBANKCODE, "124", BASE_OFFSET,["HellsingerSongs/AJR-Weak.ogg",32,32], "AJR"],
+                             "Army Of The Night" : ["ArmyOfTheNightBank", NOACTBANKCODE, "172","0.1", ["HellsingerSongs/Powerwolf-Army_Of_The_Night.mp3",56,23], "Powerwolf"],
+                             "Ring Of Fire" : ["RingOfFireBank", NOACTBANKCODE, "220",BASE_OFFSET, ["HellsingerSongs/Dragonforce-Ring_Of_Fire.mp3",35,18], "Dragonforce"],
+                             "In Due Time" : ["InDueTimeBank", NOACTBANKCODE, "170", BASE_OFFSET, ["HellsingerSongs/Killswitch_Engage-In_Due_Time.mp3",44,25], "Killswitch Engage"]}
 
 ACTION_DICT:dict = {"load" : lambda : load_level(),
                     "kill" : lambda : kill(),
@@ -179,12 +182,12 @@ def deattach_script():
     try:
         try:
             with open(DEACTIVATED_FILE_NAME, "r") as file:
-                display_message_text(attach_outcome_label,2,f"Failed in {(time.time() - start_time):.2f}s because the loader is already deattached!", FAILED_COLOR)
+                display_message_text(attach_outcome_label,2,f"Failed in {(time.time() - start_time):.2f}s because the loader is already detached!", FAILED_COLOR)
                 attachment_text[0] = "already deattached"
                 return
         except Exception as e:
             os.rename(FILE_NAME, DEACTIVATED_FILE_NAME)
-            display_message_text(attach_outcome_label,2,f"Successfully Deattached in {(time.time() - start_time):.2f}s!", SUCCESS_COLOR)
+            display_message_text(attach_outcome_label,2,f"Successfully Detached in {(time.time() - start_time):.2f}s!", SUCCESS_COLOR)
             attachment_text[0] = "deattached"
     except Exception as e:
         display_message_text(attach_outcome_label,6,f"Failed in {(time.time() - start_time):.2f}s with error \"{e}\"!", FAILED_COLOR)
@@ -229,7 +232,7 @@ def load_level_without_prompts():
         if chosen_level_config[0] == "Sheol":
             display_message_text(loaded_label, 3, f"Good Luck", "#690000")
         else:
-            display_message_text(loaded_label, 3, f"Successfully loaded Song \"{chosen_level_config[1]}\" into Hell \"{chosen_level_config[0]}\" in {time_end-time_start:.2f} seconds!", SUCCESS_COLOR)
+            display_message_text(loaded_label, 3, f"Loaded Song \"{chosen_level_config[1]}\" into Hell \"{chosen_level_config[0]}\" in {time_end-time_start:.2f} seconds!", SUCCESS_COLOR)
     except Exception as e:
         time_end = time.time()
         try:
@@ -291,7 +294,30 @@ def set_volume(volume):
 
 def update_song_stats():
     song = SONG_DICT.get(chosen_level_config[1])
-    song_BPM_label.config(text=f"BPM: {song[LIST_SONG_BPM]}")
+    bpm = song[LIST_SONG_BPM]
+    bpm_color:str = ""
+    text_size:int = 9
+    background:str = BACKGROUND_COLOR
+    if int(bpm) < 100:
+        bpm_color = "#0abfa7"
+    elif int(bpm) < 120:
+        bpm_color = "#00a624"
+    elif int(bpm) < 140:
+        bpm_color = "#59a600"
+    elif int(bpm) < 160:
+        bpm_color = "#bbc200"
+    elif int(bpm) < 180:
+        bpm_color = "#faa60a"
+    elif int(bpm) < 200:
+        bpm_color = "#e34202"
+        text_size = 10
+    else:
+        bpm_color = "#ff0000"
+        text_size = 12
+        background = "#590000"
+        
+
+    song_BPM_label.config(text=f"BPM: {bpm}", fg=bpm_color, font=("Helvetica", text_size), bg=background)
     song_artist_label.config(text=f"Author: {song[LIST_SONG_ARTIST]}")
 
 def update_hell_stats():
@@ -336,7 +362,7 @@ loaded_label = tk.Label(root, text="", font=("Helvetica", 11),fg="green",bg=BACK
 
 #Buttons
 attach_script_button = tk.Button(root,text="Attach", command=lambda:attach_script(),bg="#380000", fg="#d40000")
-deattach_script_button = tk.Button(root, text="Deattach", command=lambda:deattach_script(), bg="#380000", fg = "#d40000")
+deattach_script_button = tk.Button(root, text="Detach", command=lambda:deattach_script(), bg="#380000", fg = "#d40000")
 load_song_button = tk.Button(root, text="LOAD", font=("Helvetica", 30), width=100, height=1, command=lambda:load_level_without_prompts(), bg="#610000", fg="#ff4000")
 preview_button = tk.Button(root, text="Preview", command=lambda:preview_song(), bg="#380000", fg="#d40000")
 stop_preview_button = tk.Button(root, text="Stop", command=lambda:stop_preview(), bg="#380000", fg="#d40000")
@@ -369,15 +395,15 @@ song_select_dropdown.place(x=0,y=155)
 preview_button.place(x=400,y=100)
 stop_preview_button.place(x=460,y=100)
 song_options_label.place(x=395,y=80)
-song_stats_label.place(x=400,y=140)
-song_artist_label.place(x=370, y=160)
-song_BPM_label.place(x=370, y=180)
+song_stats_label.place(x=400,y=150)
+song_artist_label.place(x=350, y=170)
+song_BPM_label.place(x=350, y=190)
 hell_name_label.place(x=180,y=50)
 hell_description_text_label.place(x=100,y=90)
 preview_volume_slider.set(25)
 preview_volume_slider.place(x=352,y=57)
-volume_slider_label.place(x=364, y=40)
-attach_outcome_label.place(x=112,y=33)
+volume_slider_label.place(x=353, y=40)
+attach_outcome_label.place(x=100,y=33)
 auto_preview_song_checkbox.place(x=400,y=50)
 loaded_label.pack(side=tk.BOTTOM)
 
