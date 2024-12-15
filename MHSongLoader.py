@@ -296,7 +296,7 @@ def update_song_stats():
     song = SONG_DICT.get(chosen_level_config[1])
     bpm = song[LIST_SONG_BPM]
     bpm_color:str = ""
-    text_size:int = 9
+    text_size:int = 11
     background:str = BACKGROUND_COLOR
     if int(bpm) < 100:
         bpm_color = "#0abfa7"
@@ -310,10 +310,10 @@ def update_song_stats():
         bpm_color = "#faa60a"
     elif int(bpm) < 200:
         bpm_color = "#e34202"
-        text_size = 10
+        text_size = 13
     else:
         bpm_color = "#ff0000"
-        text_size = 12
+        text_size = 16
         background = "#590000"
         
 
@@ -339,23 +339,23 @@ def _actually_display_label(label:tk.Label, duration:float, message:str, text_co
 #root setup
 root = tk.Tk()
 root.title("MH Custom Song Loader")
-root.geometry("500x300")
+root.geometry("700x420")
 root.resizable(False,False)
 root.iconphoto(False,tk.PhotoImage(file="Icon.png"))
 root.wm_attributes("-topmost", 1)
 root.config(bg=BACKGROUND_COLOR)
 
 #Labels
-label = tk.Label(root, text="METAL HELLSINGER CUSTOM SONG LOADER", font=("Helvetica", 16), bg=BACKGROUND_COLOR, fg="#ff4000")
+label = tk.Label(root, text="METAL HELLSINGER CUSTOM SONG LOADER", font=("Helvetica", 22), bg=BACKGROUND_COLOR, fg="#ff4000")
 label.pack(side=tk.TOP)
-hell_label = tk.Label(root,text="HELL", font=("Helvetica", 14), bg=BACKGROUND_COLOR, fg="#c90000")
-song_label = tk.Label(root,text="SONG", font=("Helvetica", 14), bg=BACKGROUND_COLOR, fg="#c90000")
-song_options_label = tk.Label(root, text="SONG OPTIONS", font=("Helvetica", 10), bg=BACKGROUND_COLOR,fg="#c90000")
-song_stats_label = tk.Label(root, text="SONG STATS", font=("Helvetica", 10), bg=BACKGROUND_COLOR,fg="#c90000")
-song_BPM_label = tk.Label(root, text="BPM: n/a", bg=BACKGROUND_COLOR,fg="#ff602b")
-song_artist_label = tk.Label(root, text="Author: n/a", bg=BACKGROUND_COLOR,fg="#ff602b")
-hell_name_label = tk.Label(root, text="n/a", font=("Helvetica", 20), anchor="center", bg=BACKGROUND_COLOR,fg="#ff0000")
-hell_description_text_label = tk.Label(root, text="n/a",wraplength=250, bg=BACKGROUND_COLOR, fg="#de0000")
+hell_label = tk.Label(root,text="HELL", font=("Helvetica", 18), bg=BACKGROUND_COLOR, fg="#c90000")
+song_label = tk.Label(root,text="SONG", font=("Helvetica", 18), bg=BACKGROUND_COLOR, fg="#c90000")
+song_options_label = tk.Label(root, text="SONG OPTIONS", font=("Helvetica", 14), bg=BACKGROUND_COLOR,fg="#c90000")
+song_stats_label = tk.Label(root, text="SONG STATS", font=("Helvetica", 14), bg=BACKGROUND_COLOR,fg="#c90000")
+song_BPM_label = tk.Label(root, text="BPM: n/a", bg=BACKGROUND_COLOR,fg="#ff602b",font=("Helvetica",11))
+song_artist_label = tk.Label(root, text="Author: n/a", bg=BACKGROUND_COLOR,fg="#ff602b", font=("Helvetica",11))
+hell_name_label = tk.Label(root, text="n/a", font=("Helvetica", 30), anchor="center", bg=BACKGROUND_COLOR,fg="#ff0000")
+hell_description_text_label = tk.Label(root, text="n/a",wraplength=350, bg=BACKGROUND_COLOR, fg="#de0000", font=("Helvetica",14))
 volume_slider_label = tk.Label(root, text="Volume", font=("Helvetica", 7),bg=BACKGROUND_COLOR, fg="#ff602b")
 attach_outcome_label = tk.Label(root, text="",bg=BACKGROUND_COLOR) #dont change color
 loaded_label = tk.Label(root, text="", font=("Helvetica", 11),fg="green",bg=BACKGROUND_COLOR) #dont change color
@@ -363,49 +363,59 @@ loaded_label = tk.Label(root, text="", font=("Helvetica", 11),fg="green",bg=BACK
 #Buttons
 attach_script_button = tk.Button(root,text="Attach", command=lambda:attach_script(),bg="#380000", fg="#d40000")
 deattach_script_button = tk.Button(root, text="Detach", command=lambda:deattach_script(), bg="#380000", fg = "#d40000")
-load_song_button = tk.Button(root, text="LOAD", font=("Helvetica", 30), width=100, height=1, command=lambda:load_level_without_prompts(), bg="#610000", fg="#ff4000")
-preview_button = tk.Button(root, text="Preview", command=lambda:preview_song(), bg="#380000", fg="#d40000")
-stop_preview_button = tk.Button(root, text="Stop", command=lambda:stop_preview(), bg="#380000", fg="#d40000")
+load_song_button = tk.Button(root, text="LOAD", font=("Helvetica", 30), width=100, command=lambda:load_level_without_prompts(), bg="#610000", fg="#ff4000")
+preview_button = tk.Button(root, text="Preview", command=lambda:preview_song(), bg="#380000", fg="#d40000",width = 8, font=("Helvetica", 12))
+stop_preview_button = tk.Button(root, text="Stop", command=lambda:stop_preview(), bg="#380000", fg="#d40000", width=8, font=("Helvetica", 12))
 
 #dropdowns
 #songs
 selected_song = StringVar(root)
 selected_song.set(list(SONG_DICT.keys())[0])
 song_select_dropdown = tk.OptionMenu(root, selected_song, *SONG_DICT.keys(), command=on_select)
-song_select_dropdown.config(bg="#380000", fg="#fa3605")
+song_select_dropdown.config(bg="#380000", fg="#fa3605", height=1, font=("Helvetica", 12))
 #hells
 selected_hell = StringVar(root)
 selected_hell.set(list(HELL_LIST)[0])
 hell_select_dropdown = tk.OptionMenu(root, selected_hell, *HELL_LIST, command=on_select)
-hell_select_dropdown.config(bg="#380000", fg="#fa3605")
+hell_select_dropdown.config(bg="#380000", fg="#fa3605", height=1, font=("Helvetica", 12))
 #preview volume slider
-preview_volume_slider = tk.Scale(root, from_=100, to=0,orient="vertical",command=set_volume,width=10, length=100,bg="#380000",fg="#ff602b")
+preview_volume_slider = tk.Scale(root, from_=100, to=0,orient="vertical",command=set_volume,width=12, length=100,bg="#380000",fg="#ff602b",font=("Helvetica", 12))
 
 #checkbox
 auto_preview_song = tk.BooleanVar()
 auto_preview_song_checkbox = tk.Checkbutton(root, text="Autoplay", variable=auto_preview_song, onvalue=True, offvalue=False, bg=BACKGROUND_COLOR,fg="#ff602b")
 #positioning
+
 load_song_button.pack(side=tk.BOTTOM)
-attach_script_button.place(x=3,y=30)
-deattach_script_button.place(x=53,y=30)
-hell_label.place(x=0,y=65)
-hell_select_dropdown.place(x=0,y=90)
-song_label.place(x=0, y=130)
-song_select_dropdown.place(x=0,y=155)
-preview_button.place(x=400,y=100)
-stop_preview_button.place(x=460,y=100)
-song_options_label.place(x=395,y=80)
-song_stats_label.place(x=400,y=150)
-song_artist_label.place(x=350, y=170)
-song_BPM_label.place(x=350, y=190)
-hell_name_label.place(x=180,y=50)
-hell_description_text_label.place(x=100,y=90)
+attach_outcome_label.place(x=100,y=38)
+
+#top
+attach_script_button.place(x=3,y=36)
+deattach_script_button.place(x=53,y=36)
+
+#left
+hell_label.place(x=0,y=100)
+hell_select_dropdown.place(x=0,y=130)
+song_label.place(x=0, y=200)
+song_select_dropdown.place(x=0,y=230)
+
+#right
+song_options_label.place(x=545,y=58)
+preview_button.place(x=612,y=129)
+stop_preview_button.place(x=612,y=170)
 preview_volume_slider.set(25)
-preview_volume_slider.place(x=352,y=57)
-volume_slider_label.place(x=353, y=40)
-attach_outcome_label.place(x=100,y=33)
-auto_preview_song_checkbox.place(x=400,y=50)
+preview_volume_slider.place(x=552,y=97)
+volume_slider_label.place(x=557, y=80)
+auto_preview_song_checkbox.place(x=612,y=97)
+
+song_stats_label.place(x=545,y=220)
+song_artist_label.place(x=545, y=250)
+song_BPM_label.place(x=545, y=270)
+
+#center
+hell_name_label.place(x=265,y=75)
 loaded_label.pack(side=tk.BOTTOM)
+hell_description_text_label.place(x=160,y=130)
 
 chosen_level_config = [HELL_LIST[0], list(SONG_DICT.keys())[0]]
 playing_preview_song = [""]
