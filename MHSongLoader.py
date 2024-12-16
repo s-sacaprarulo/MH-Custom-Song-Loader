@@ -350,9 +350,9 @@ def fetch_custom_songs():
                 else:
                     end_index += 1
             end_index += 1
-        #get the information we need from that line
-        #the key for the dictionary is seperated from the rest of the info with a '|' token
+            #get the information we need from that line
 
+            #the key for the dictionary is seperated from the rest of the info with a '|' token
             line_start = 0
             line_end = 0
             key = ""
@@ -362,6 +362,7 @@ def fetch_custom_songs():
                 else:
                     line_end += 1
             
+            #gets the bank file
 
 fetch_custom_songs()
 
