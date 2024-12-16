@@ -334,7 +334,36 @@ def _actually_display_label(label:tk.Label, duration:float, message:str, text_co
     time.sleep(duration)
     label.config(text="",fg="black")
 
+def fetch_custom_songs():
+    with open("Custom_Song_List.txt", "r") as file:
+        all_songs_loaded = False
+        file_text = file.read()
+        #pulls out a single line from the text file, using ';' tokens to seperate dictionary entries
+        start_index = 0
+        end_index = 0
+        while not all_songs_loaded:
+            line:str = ""
+            while line == "":
+                if file_text[end_index:end_index+1] == ";":
+                    line = file_text[start_index:end_index]
+                    start_index = end_index
+                else:
+                    end_index += 1
+            end_index += 1
+        #get the information we need from that line
+        #the key for the dictionary is seperated from the rest of the info with a '|' token
 
+            line_start = 0
+            line_end = 0
+            key = ""
+            while key == "":
+                if line[line_end:line_end +1] == "|":
+                    key = line[line_start:line_end]
+                else:
+                    line_end += 1
+            
+
+fetch_custom_songs()
 
 #root setup
 root = tk.Tk()

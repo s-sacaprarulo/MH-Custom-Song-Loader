@@ -1,0 +1,1 @@
+"Army Of The Night"|"ArmyOfTheNightBank",NOACTBANKCODE,"172","0.1",["HellsingerSongs/Powerwolf-Army_Of_The_Night.mp3",56,23],"Powerwolf";"Ring Of Fire" : "RingOfFireBank", NOACTBANKCODE, "220",BASE_OFFSET, ["HellsingerSongs/Dragonforce-Ring_Of_Fire.mp3",35,18], "Dragonforce";
