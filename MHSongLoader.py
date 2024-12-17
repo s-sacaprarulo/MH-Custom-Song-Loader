@@ -383,7 +383,7 @@ def _fetch_word(start_and_stop:list[int], line:str) -> str:
     return return_str
 
 def set_always_on_top():
-    if always_on_top:
+    if always_on_top.get():
         root.wm_attributes("-topmost", True)
     else:
         root.wm_attributes("-topmost", False)
@@ -397,7 +397,6 @@ root.title("MH Custom Song Loader")
 root.geometry("700x420")
 root.resizable(False,False)
 root.iconphoto(False,tk.PhotoImage(file="Icon.png"))
-root.wm_attributes("-topmost", 1)
 root.config(bg=BACKGROUND_COLOR)
 
 #Labels
@@ -449,7 +448,7 @@ attach_outcome_label.place(x=100,y=38)
 #top
 attach_script_button.place(x=3,y=36)
 deattach_script_button.place(x=53,y=36)
-always_on_top_checkbox.place(x=3,y=70)
+always_on_top_checkbox.place(x=0,y=65)
 
 #left
 hell_label.place(x=0,y=100)
