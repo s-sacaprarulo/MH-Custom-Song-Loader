@@ -382,6 +382,12 @@ def _fetch_word(start_and_stop:list[int], line:str) -> str:
     start_and_stop[0] = line_end + 1
     return return_str
 
+def set_always_on_top():
+    if always_on_top:
+        root.wm_attributes("-topmost", True)
+    else:
+        root.wm_attributes("-topmost", False)
+
 start_time = time.time()
 song_count = fetch_custom_songs()
 
@@ -433,6 +439,8 @@ preview_volume_slider = tk.Scale(root, from_=100, to=0,orient="vertical",command
 #checkbox
 auto_preview_song = tk.BooleanVar()
 auto_preview_song_checkbox = tk.Checkbutton(root, text="Autoplay", variable=auto_preview_song, onvalue=True, offvalue=False, bg=BACKGROUND_COLOR,fg="#ff602b")
+always_on_top = tk.BooleanVar()
+always_on_top_checkbox = tk.Checkbutton(root, text="Always on top", variable = always_on_top, onvalue=True, offvalue=False, bg=BACKGROUND_COLOR,fg="#ff602b",command=set_always_on_top)
 #positioning
 
 load_song_button.pack(side=tk.BOTTOM)
@@ -441,6 +449,7 @@ attach_outcome_label.place(x=100,y=38)
 #top
 attach_script_button.place(x=3,y=36)
 deattach_script_button.place(x=53,y=36)
+always_on_top_checkbox.place(x=3,y=70)
 
 #left
 hell_label.place(x=0,y=100)
@@ -472,7 +481,7 @@ attachment_text:list[str] = [""]
 
 update_song_stats()
 update_hell_stats()
-display_message_text(loaded_label, 5, f"Loaded {song_count} songs in {time.time() - start_time:.10f} seconds", SUCCESS_COLOR)
+display_message_text(loaded_label, 5, f"Loaded {song_count} songs in {time.time() - start_time:.3f} seconds", SUCCESS_COLOR)
 root.mainloop()
 sys.exit()
 
