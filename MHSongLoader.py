@@ -21,6 +21,8 @@ JSON_FILE_LOCATION:str = PC_HELLSINGER_FILE_PATH
 FILE_NAME:str = PC_ENABLED_FILE 
 DEACTIVATED_FILE_NAME:str = PC_DISABLED_FILE
 
+CUSTOM_SONGS_FILE_LOCATION:str = "Custom_Song_List.txt"
+
 LIST_SONG_BANK_FILE = 0
 LIST_SONG_ACT_CODE = 1
 LIST_SONG_BPM = 2
@@ -57,18 +59,7 @@ NOACTBANKCODE:str = "{95972dee-fd3a-4a5c-9024-8f714883936e}"
 
 #key is the song name
 #list is the following: bank file, bank code, bpm, offset, [preview file, preview start time, preview duration], Artist
-SONG_DICT:dict[list[str]] = {"Gold" : ["GoldBank",NOACTBANKCODE,"155", "0.16",["HellsingerSongs/Loi-Gold.ogg",42,40], "Loi"],
-                             "Halo" : ["HaloBank",NOACTBANKCODE,"80",BASE_OFFSET,["HellsingerSongs/Beyonce-Halo.mp3", 50, 23], "Beyonce"],
-                             "Strangers" : ["StrangersBank",NOACTBANKCODE,"150",BASE_OFFSET,["HellsingerSongs/Dragonforce-Strangers.mp3",51,27], "Dragonforce"],
-                             "Night Fall" : ["NightFallBank",NOACTBANKCODE,"192","0.3",["HellsingerSongs/Blind_Guardian-NightFall.mp3",75,23],"Blind Guardian"],
-                             "If You Cant Hang" : ["IfYouCantHangBank",NOACTBANKCODE,"192","0.6",["HellsingerSongs/Sleeping_With_Sirens-If_You_Can't_Hang.mp3",75,25], "Sleeping With Sirens"],
-                             "The Things We Believe In" : ["TheThingsWeBelieveInBank",NOACTBANKCODE,"122",BASE_OFFSET,["HellsingerSongs/Order_Organ-The_Things_we_believe_in.ogg",89,33], "Order Organ"],
-                             "Hope Is The Thing With Feathers" : ["HopeIsTheThingWithFeathersBank",NOACTBANKCODE,"128",BASE_OFFSET,["HellsingerSongs/Shida_Aruya-Hope_Is_the_Thing_With_Feathers.mp3",59,31], "Shida Aruya"], #as elliott wanted >:(
-                             "Crab Rave" : ["CrabRaveBank", NOACTBANKCODE, "125", BASE_OFFSET,["HellsingerSongs/Noisestorm-Crab_Rave.mp3",74,33], "Noisestorm"],
-                             "Weak" : ["WeakBank", NOACTBANKCODE, "124", BASE_OFFSET,["HellsingerSongs/AJR-Weak.ogg",32,32], "AJR"],
-                             "Army Of The Night" : ["ArmyOfTheNightBank", NOACTBANKCODE, "172","0.1", ["HellsingerSongs/Powerwolf-Army_Of_The_Night.mp3",56,23], "Powerwolf"],
-                             "Ring Of Fire" : ["RingOfFireBank", NOACTBANKCODE, "220",BASE_OFFSET, ["HellsingerSongs/Dragonforce-Ring_Of_Fire.mp3",35,18], "Dragonforce"],
-                             "In Due Time" : ["InDueTimeBank", NOACTBANKCODE, "170", BASE_OFFSET, ["HellsingerSongs/Killswitch_Engage-In_Due_Time.mp3",44,25], "Killswitch Engage"]}
+SONG_DICT:dict[list[str]] = {}
 
 ACTION_DICT:dict = {"load" : lambda : load_level(),
                     "kill" : lambda : kill(),
@@ -335,7 +326,9 @@ def _actually_display_label(label:tk.Label, duration:float, message:str, text_co
     label.config(text="",fg="black")
 
 def fetch_custom_songs():
-    with open("Custom_Song_List.txt", "r") as file:
+    song_count = 0
+    time_start = time.time()
+    with open(CUSTOM_SONGS_FILE_LOCATION, "r") as file:
         all_songs_loaded = False
         file_text = file.read()
         #pulls out a single line from the text file, using ';' tokens to seperate dictionary entries
@@ -344,25 +337,50 @@ def fetch_custom_songs():
         while not all_songs_loaded:
             line:str = ""
             while line == "":
-                if file_text[end_index:end_index+1] == ";":
-                    line = file_text[start_index:end_index]
+                if file_text[end_index:end_index+1] == "|":
+                    line = file_text[start_index:end_index + 1]
                     start_index = end_index
+                elif end_index > len(file_text):
+                    all_songs_loaded = True
+                    break
                 else:
                     end_index += 1
+            if all_songs_loaded:
+                break
             end_index += 1
+            start_index = end_index
             #get the information we need from that line
 
-            #the key for the dictionary is seperated from the rest of the info with a '|' token
-            line_start = 0
-            line_end = 0
-            key = ""
-            while key == "":
-                if line[line_end:line_end +1] == "|":
-                    key = line[line_start:line_end]
-                else:
-                    line_end += 1
+            start_and_stop = [0, 0]
+            key = _fetch_word(start_and_stop, line)
+            bank_file_name = _fetch_word(start_and_stop, line)
+            bank_code = _fetch_word(start_and_stop, line)
+            bpm = _fetch_word(start_and_stop, line)
+            offset = _fetch_word(start_and_stop, line)
+            preview_stuff:list = [_fetch_word(start_and_stop, line), int(_fetch_word(start_and_stop, line)), int(_fetch_word(start_and_stop, line))]
+            artist = _fetch_word(start_and_stop, line)
             
-            #gets the bank file
+            SONG_DICT.update({key:[bank_file_name,bank_code,bpm,offset,preview_stuff,artist]})
+            song_count += 1
+    print(f"Loaded {song_count} songs in {time.time() - time_start} seconds")
+
+def _fetch_word(start_and_stop:list[int], line:str) -> str:
+    line_end = start_and_stop[1]
+    line_start = start_and_stop[0]
+    return_str = ""
+    while return_str == "":
+        if line[line_end : line_end + 1] == "," or line[line_end : line_end + 1] == "|":
+            return_str = line[line_start:line_end]
+            if return_str == "NOACTBANKCODE":
+                return_str = NOACTBANKCODE
+            if return_str == "BASE_OFFSET":
+                return_str = BASE_OFFSET
+        else:
+            line_end += 1
+    start_and_stop[1] = line_end + 1
+    start_and_stop[0] = line_end + 1
+    return return_str
+
 
 fetch_custom_songs()
 
