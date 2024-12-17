@@ -325,7 +325,7 @@ def _actually_display_label(label:tk.Label, duration:float, message:str, text_co
     time.sleep(duration)
     label.config(text="",fg="black")
 
-def fetch_custom_songs():
+def fetch_custom_songs() -> int:
     song_count = 0
     time_start = time.time()
     with open(CUSTOM_SONGS_FILE_LOCATION, "r") as file:
@@ -363,6 +363,7 @@ def fetch_custom_songs():
             SONG_DICT.update({key:[bank_file_name,bank_code,bpm,offset,preview_stuff,artist]})
             song_count += 1
     print(f"Loaded {song_count} songs in {time.time() - time_start} seconds")
+    return song_count
 
 def _fetch_word(start_and_stop:list[int], line:str) -> str:
     line_end = start_and_stop[1]
@@ -381,8 +382,8 @@ def _fetch_word(start_and_stop:list[int], line:str) -> str:
     start_and_stop[0] = line_end + 1
     return return_str
 
-
-fetch_custom_songs()
+start_time = time.time()
+song_count = fetch_custom_songs()
 
 #root setup
 root = tk.Tk()
@@ -462,15 +463,16 @@ song_BPM_label.place(x=545, y=270)
 
 #center
 hell_name_label.place(x=265,y=75)
-loaded_label.pack(side=tk.BOTTOM)
 hell_description_text_label.place(x=160,y=130)
 
+loaded_label.pack(side=tk.BOTTOM)
 chosen_level_config = [HELL_LIST[0], list(SONG_DICT.keys())[0]]
 playing_preview_song = [""]
 attachment_text:list[str] = [""]
 
 update_song_stats()
 update_hell_stats()
+display_message_text(loaded_label, 5, f"Loaded {song_count} songs in {time.time() - start_time:.10f} seconds", SUCCESS_COLOR)
 root.mainloop()
 sys.exit()
 
