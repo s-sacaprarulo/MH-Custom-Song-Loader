@@ -61,12 +61,6 @@ NOACTBANKCODE:str = "{95972dee-fd3a-4a5c-9024-8f714883936e}"
 #list is the following: bank file, bank code, bpm, offset, [preview file, preview start time, preview duration], Artist
 SONG_DICT:dict[list[str]] = {}
 
-ACTION_DICT:dict = {"load" : lambda : load_level(),
-                    "kill" : lambda : kill(),
-                    "attach" : lambda : attach_script(),
-                    "deattach" : lambda : deattach_script(),
-                    "list" : lambda : print_list()}
-
 
 #creates a string for a specific song for a given hell
 #raises an exception if the hell or custom song do not exist
@@ -95,58 +89,6 @@ def create_custom_song_string(hell:str, main_song:str, boss:bool = True) -> str:
         boss_level_music = ",\"BossMusic\" : {" + boss_bank + boss_event + boss_low_hp + boss_offset + boss_bpm + "}"
 
     return main_level_music + boss_level_music + "}"
-
-#creates a custom song in the console and adds it to customsongs.json
-def load_level():
-    
-    #get input hell and make sure it exists
-    hell = ""
-    while hell == "":
-        hell = input("Enter a hell: ")
-        if not hell in HELL_LIST:
-            print("Not in the Hell list (Case sensitive)")
-            hell = ""
-    
-    #get input song and make sure it exists
-    song = ""
-    while song == "":
-        song = input("Enter a song: ")
-        try:
-            SONG_DICT[song]
-        except:
-            print("Not in the song list (did you misspell it or forget to import it into python?)")
-            song = ""
-
-    #check if the song should be played during the boss
-    out = ""
-    boss:bool = False
-    while out == "":
-        out = input("Should the song play in the boss battle as well? (y/n): ")
-        if out == "y":
-            boss = True
-        elif out == "n":
-            boss = False
-        else:
-            print("Unknown input. Type in y or n.")
-            out = ""
-    #create and import the song
-    time_start = time.time()
-    try:
-        songs_string = "" #defaults to an empty string so the game doesn't crash if the code errors for some reason
-        songs_string = create_custom_song_string(hell, song, boss)
-
-        # This first check is to check if the file actually exists.
-        # We dont need to read the file, but if we try to write to a file that doesn't exist, it will create a new file
-        # this will throw an exception if the file does not exist and, thus, not overwrite it
-        with open(JSON_FILE_LOCATION, "r") as file:
-            pass
-        with open(JSON_FILE_LOCATION, "w") as file:
-            file.write(INTRO_CONST + songs_string + OUTRO_CONST)
-        time_end = time.time()
-        print(f"Operation completed successfully in {time_end - time_start} seconds!")
-    except Exception as e:
-        time_end = time.time()
-        print(f"Operation failed in {time_end - time_start} seconds with excpetion {e}\n(This may be because the custom songs are not attached run 'attach' to attach them. Or the file location may be incorrect)")
 
 #Attaches the customsongs.json file to Hellsinger by renaming the file back to 'customsongs.json'
 #This is so modded songs can be played once more without resetting the game
@@ -183,16 +125,6 @@ def deattach_script():
     except Exception as e:
         display_message_text(attach_outcome_label,6,f"Failed in {(time.time() - start_time):.2f}s with error \"{e}\"!", FAILED_COLOR)
         attachment_text[0] = "deattach error"
-
-#Prints out the hells and songs
-def print_list():
-    print(f"Hells: 'Voke', 'Stygia', 'Yhelm', 'Incaustis', 'Gehenna', 'Nihil', 'Acheron', 'Sheol'\nSongs: {list(SONG_DICT.keys())}")
-
-#Kills the program
-def kill():
-    output = input("Are you sure? (Type 'yes' to continue or anything else to abort): ")
-    if output == "yes":
-        sys.exit()
 
 #function for selecting a dropdown item
 def on_select(selected_song):
@@ -391,12 +323,82 @@ def set_always_on_top():
 def create_new_song():
     new_song_window = tk.Tk()
     new_song_window.title("NEW SONG")
-    new_song_window.geometry("700x420")
+    new_song_window.geometry("500x300")
     new_song_window.config(bg=BACKGROUND_COLOR)
+    #new_song_window.wm_attributes("-topmost", True)
 
-    song_name_textbox = tk.Text(new_song_window)
 
+    #left hand stuff (the required stuff)
+
+    window_title_label = tk.Label(new_song_window,text="Create New Song",font=("Helvetica", 22), bg=BACKGROUND_COLOR, fg="#ff4000")
+    song_name_tb_label = tk.Label(new_song_window,text="Song Name",bg=BACKGROUND_COLOR,fg="#ff4000")
+    song_bankfile_tb_label = tk.Label(new_song_window,text="Bank File (with '.bank')",bg=BACKGROUND_COLOR,fg="#ff4000")
+    song_bpm_tb_label = tk.Label(new_song_window,text="Beats Per Minute",bg=BACKGROUND_COLOR,fg="#ff4000")
+    song_offset_tb_label = tk.Label(new_song_window,text="BPM offset",bg=BACKGROUND_COLOR,fg="#ff4000")
+    song_bankcode_tb_label = tk.Label(new_song_window,text="File Code",bg=BACKGROUND_COLOR,fg="#ff4000")
+
+    song_name_textbox = tk.Text(new_song_window,width=30, height=1)
+    song_bankfile_textbox = tk.Text(new_song_window,width=20, height=1)
+    song_bpm_textbox = tk.Text(new_song_window,width=20, height=1)
+    song_offset_textbox = tk.Text(new_song_window,width=20, height=1)
+    song_bankcode_textbox = tk.Text(new_song_window,width=20, height=1)
+
+    window_title_label.pack(side=tk.TOP)
+    song_name_tb_label.place(x=130,y=30)
+    song_name_textbox.place(x=130, y=50)
+
+    song_bankfile_tb_label.place(x=30,y=80)
+    song_bankfile_textbox.place(x=30,y=100)
+
+    song_bankcode_tb_label.place(x=30,y=130)
+    song_bankcode_textbox.place(x=30,y=150)
+
+    song_bpm_tb_label.place(x=30,y=180)
+    song_bpm_textbox.place(x=30,y=200)
+
+    song_offset_tb_label.place(x=30,y=230)
+    song_offset_textbox.place(x=30,y=250)
+
+    #right hand stuff (not-required stuff)
+    song_previewfile_tb_label = tk.Label(new_song_window,text="Preview Audio File (with extension)",bg=BACKGROUND_COLOR,fg="#ff4000")
+    song_previewstart_tb_label = tk.Label(new_song_window,text="Preview Start time (30 starts 30s in)",bg=BACKGROUND_COLOR,fg="#ff4000")
+    song_previewduration_tb_label = tk.Label(new_song_window,text="Preview Duration (15 plays for 15s)",bg=BACKGROUND_COLOR,fg="#ff4000")
+    song_artist_tb_label = tk.Label(new_song_window,text="Artist",bg=BACKGROUND_COLOR,fg="#ff4000")
+
+    song_previewfile_textbox = tk.Text(new_song_window,width=20, height=1)
+    song_previewstart_textbox = tk.Text(new_song_window,width=20, height=1)
+    song_previewduration_textbox = tk.Text(new_song_window,width=20, height=1)
+    song_artist_textbox = tk.Text(new_song_window,width=20, height=1)
+
+    song_artist_tb_label.place(x=300,y=80)
+    song_artist_textbox.place(x=300,y=100)
+
+    song_previewfile_tb_label.place(x=300,y=130)
+    song_previewfile_textbox.place(x=300,y=150)
+
+    song_previewstart_tb_label.place(x=300,y=180)
+    song_previewstart_textbox.place(x=300,y=200)
+
+    song_previewduration_tb_label.place(x=300,y=230)
+    song_previewduration_textbox.place(x=300,y=250)
+
+    create_button = tk.Button(new_song_window, text="Create Song!", font=("Helvetica", 16), width=100, command=lambda:write_new_song_string_to_file(song_name_textbox.get("1.0", 'end-1c'),song_bankfile_textbox.get("1.0", 'end-1c'),song_bankcode_textbox.get("1.0", 'end-1c'),song_bpm_textbox.get("1.0", 'end-1c'),song_offset_textbox.get("1.0", 'end-1c'),song_previewfile_textbox.get("1.0", 'end-1c'),song_previewstart_textbox.get("1.0", 'end-1c'),song_previewduration_textbox.get("1.0", 'end-1c'),song_artist_textbox.get("1.0", 'end-1c')), bg="#610000", fg="#ff4000")
+    create_button.pack(side=tk.BOTTOM)
     new_song_window.mainloop()
+
+def write_new_song_string_to_file(song_name:str, song_file:str,song_code:str,song_bpm:str,song_offset:str,song_prevlocation:str, song_prevstart:str,song_prevdur:str,song_artist:str):
+    past_str = ""
+    try:
+        with open(CUSTOM_SONGS_FILE_LOCATION, "r") as file:
+            past_str = file.read()
+    except:
+        print("No custom song file detected!")
+        return
+
+    with open(CUSTOM_SONGS_FILE_LOCATION, "w") as file:
+        file.write(past_str + f"{song_name},{song_file},{song_code},{song_bpm},{song_offset},{song_prevlocation},{song_prevstart},{song_prevdur},{song_artist}|")
+    fetch_custom_songs()
+    
 
 start_time = time.time()
 song_count = fetch_custom_songs()
@@ -484,7 +486,7 @@ song_BPM_label.place(x=545, y=270)
 hell_name_label.place(x=265,y=75)
 hell_description_text_label.place(x=160,y=130)
 
-create_new_song_button.place(x=400,y=70)
+create_new_song_button.place(x=615,y=307)
 
 loaded_label.pack(side=tk.BOTTOM)
 chosen_level_config = [HELL_LIST[0], list(SONG_DICT.keys())[0]]
@@ -495,24 +497,3 @@ update_song_stats()
 update_hell_stats()
 display_message_text(loaded_label, 5, f"Loaded {song_count} songs in {time.time() - start_time:.3f} seconds", SUCCESS_COLOR)
 root.mainloop()
-sys.exit()
-
-#retired command prompt thing
-
-#main loop of the program
-while True:
-    #gets a command
-    command = input(f"Give a command {list(ACTION_DICT.keys())}: ")
-
-    #attempts to execute the command
-    try:
-        ACTION_DICT[command]()
-    
-    #if the command errors
-    except Exception as e:
-        #checks if the error is caused by an invalid command
-        if command == e.args[0]:
-            print(f"Unknown command!")
-        #otherwise prints the error
-        else:
-            print(f"An error occured: {e}")
