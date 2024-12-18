@@ -388,6 +388,16 @@ def set_always_on_top():
     else:
         root.wm_attributes("-topmost", False)
 
+def create_new_song():
+    new_song_window = tk.Tk()
+    new_song_window.title("NEW SONG")
+    new_song_window.geometry("700x420")
+    new_song_window.config(bg=BACKGROUND_COLOR)
+
+    song_name_textbox = tk.Text(new_song_window)
+
+    new_song_window.mainloop()
+
 start_time = time.time()
 song_count = fetch_custom_songs()
 
@@ -420,6 +430,7 @@ deattach_script_button = tk.Button(root, text="Detach", command=lambda:deattach_
 load_song_button = tk.Button(root, text="LOAD", font=("Helvetica", 30), width=100, command=lambda:load_level_without_prompts(), bg="#610000", fg="#ff4000")
 preview_button = tk.Button(root, text="Preview", command=lambda:preview_song(), bg="#380000", fg="#d40000",width = 8, font=("Helvetica", 12))
 stop_preview_button = tk.Button(root, text="Stop", command=lambda:stop_preview(), bg="#380000", fg="#d40000", width=8, font=("Helvetica", 12))
+create_new_song_button = tk.Button(root, text="NEW", command=lambda:create_new_song(), bg="#380000", fg="#d40000", width=8, font=("Helvetica", 12))
 
 #dropdowns
 #songs
@@ -472,6 +483,8 @@ song_BPM_label.place(x=545, y=270)
 #center
 hell_name_label.place(x=265,y=75)
 hell_description_text_label.place(x=160,y=130)
+
+create_new_song_button.place(x=400,y=70)
 
 loaded_label.pack(side=tk.BOTTOM)
 chosen_level_config = [HELL_LIST[0], list(SONG_DICT.keys())[0]]
