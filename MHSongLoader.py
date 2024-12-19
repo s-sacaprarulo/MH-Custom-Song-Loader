@@ -1,4 +1,3 @@
-import sys
 import os
 import tkinter as tk
 from tkinter import StringVar
@@ -17,9 +16,9 @@ PC_DISABLED_FILE = "C:/Program Files (x86)/Steam/steamapps/common/Metal Hellsing
 TEST_ENABLED_FILE = "Test.json"
 TEST_DISABLED_FILE = "in_Test.json"
 
-JSON_FILE_LOCATION:str = PC_HELLSINGER_FILE_PATH
-FILE_NAME:str = PC_ENABLED_FILE 
-DEACTIVATED_FILE_NAME:str = PC_DISABLED_FILE
+JSON_FILE_LOCATION:str = TEST_FILE_PATH
+FILE_NAME:str = TEST_ENABLED_FILE 
+DEACTIVATED_FILE_NAME:str = TEST_DISABLED_FILE
 
 CUSTOM_SONGS_FILE_LOCATION:str = "Custom_Song_List.txt"
 
@@ -323,7 +322,7 @@ def set_always_on_top():
 def create_new_song():
     new_song_window = tk.Tk()
     new_song_window.title("NEW SONG")
-    new_song_window.geometry("500x300")
+    new_song_window.geometry("500x320")
     new_song_window.config(bg=BACKGROUND_COLOR)
     #new_song_window.wm_attributes("-topmost", True)
 
@@ -437,10 +436,11 @@ create_new_song_button = tk.Button(root, text="NEW", command=lambda:create_new_s
 
 #dropdowns
 #songs
-song_dropdown:tk.OptionMenu = None
+song_dropdown:list[tk.OptionMenu] = []
 def put_songs_on_dropdown():
     try:
-        song_dropdown.destroy()
+        song_dropdown[0].destroy()
+        song_dropdown.pop(0)
     except:
         pass
     selected_song = StringVar(root)
@@ -448,8 +448,11 @@ def put_songs_on_dropdown():
     song_select_dropdown = tk.OptionMenu(root, selected_song, *SONG_DICT.keys(), command=on_select)
     song_select_dropdown.config(bg="#380000", fg="#fa3605", height=1, font=("Helvetica", 12))
     song_select_dropdown.place(x=0,y=230)
-    song_dropdown = song_select_dropdown
-put_songs_on_dropdown()
+    song_dropdown.append(song_select_dropdown)
+    chosen_level_config[1] = list(SONG_DICT.keys())[0]
+    time_start = time.time()
+    update_song_stats()
+    display_message_text(loaded_label,5, f"Loaded {song_count} songs in {time.time() - time_start:.3f} seconds", SUCCESS_COLOR)
 #hells
 selected_hell = StringVar(root)
 selected_hell.set(list(HELL_LIST)[0])
@@ -503,7 +506,7 @@ chosen_level_config = [HELL_LIST[0], list(SONG_DICT.keys())[0]]
 playing_preview_song = [""]
 attachment_text:list[str] = [""]
 
-update_song_stats()
+put_songs_on_dropdown()
 update_hell_stats()
 display_message_text(loaded_label, 5, f"Loaded {song_count} songs in {time.time() - start_time:.3f} seconds", SUCCESS_COLOR)
 root.mainloop()
