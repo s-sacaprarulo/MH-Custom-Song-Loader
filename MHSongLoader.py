@@ -398,6 +398,7 @@ def write_new_song_string_to_file(song_name:str, song_file:str,song_code:str,son
     with open(CUSTOM_SONGS_FILE_LOCATION, "w") as file:
         file.write(past_str + f"{song_name},{song_file},{song_code},{song_bpm},{song_offset},{song_prevlocation},{song_prevstart},{song_prevdur},{song_artist}|")
     fetch_custom_songs()
+    put_songs_on_dropdown()
     
 
 start_time = time.time()
@@ -436,10 +437,19 @@ create_new_song_button = tk.Button(root, text="NEW", command=lambda:create_new_s
 
 #dropdowns
 #songs
-selected_song = StringVar(root)
-selected_song.set(list(SONG_DICT.keys())[0])
-song_select_dropdown = tk.OptionMenu(root, selected_song, *SONG_DICT.keys(), command=on_select)
-song_select_dropdown.config(bg="#380000", fg="#fa3605", height=1, font=("Helvetica", 12))
+song_dropdown:tk.OptionMenu = None
+def put_songs_on_dropdown():
+    try:
+        song_dropdown.destroy()
+    except:
+        pass
+    selected_song = StringVar(root)
+    selected_song.set(list(SONG_DICT.keys())[0])
+    song_select_dropdown = tk.OptionMenu(root, selected_song, *SONG_DICT.keys(), command=on_select)
+    song_select_dropdown.config(bg="#380000", fg="#fa3605", height=1, font=("Helvetica", 12))
+    song_select_dropdown.place(x=0,y=230)
+    song_dropdown = song_select_dropdown
+put_songs_on_dropdown()
 #hells
 selected_hell = StringVar(root)
 selected_hell.set(list(HELL_LIST)[0])
@@ -467,7 +477,7 @@ always_on_top_checkbox.place(x=0,y=65)
 hell_label.place(x=0,y=100)
 hell_select_dropdown.place(x=0,y=130)
 song_label.place(x=0, y=200)
-song_select_dropdown.place(x=0,y=230)
+
 
 #right
 song_options_label.place(x=545,y=58)
