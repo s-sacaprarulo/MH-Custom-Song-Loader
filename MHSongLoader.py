@@ -329,8 +329,8 @@ def create_new_song():
     new_song_window.title("NEW SONG")
     new_song_window.geometry("500x320")
     new_song_window.config(bg=BACKGROUND_COLOR)
-    #new_song_window.wm_attributes("-topmost", True)
-
+    new_song_window.wm_attributes("-topmost", True)
+    new_song_window.resizable(False,False)
 
     #left hand stuff (the required stuff)
 
@@ -408,10 +408,10 @@ def write_new_song_string_to_file(song_name:str, song_file:str,song_code:str,son
     try:
         check_new_song_failsafes(song_name, song_file,song_code,song_bpm,song_offset,song_prevlocation, song_prevstart,song_prevdur,song_artist)
     except ValueError as e:
-        output = messagebox.askyesno("Song Creation Error!", f"Song creation failed because {e}. You can continue by clicking the \"Yes\" button below. Only do this if you know what you are doing. \nWould you like to continue with the creation process?")
+        output = messagebox.askyesno("Song Creation Error!", f"Song creation failed because {e}. You can continue by clicking the \"Yes\" button below.\nWould you like to continue with the creation process?")
         if not output:
             return
-        output = messagebox.askyesno("Song Creation Error!", f"ARE YOU SURE? ONLY DO THIS IF YOU KNOW WHAT YOU ARE DOING. THIS MAY CORRUPT THE PROGRAM'S FILES.")
+        output = messagebox.askyesno("Song Creation Error!", f"Are you sure? This could cause file corruption and errors. Only continue if you know what you are doing. \nUsing a \",\" or \"|\" token will ABSOLUTELY ALWAYS BREAK THE PROGRAM AND CAUSE AN INFINITE LOOP AND/OR ERRORS (you will have to modify the text file manually).")
         if not output:
             return
 
