@@ -402,6 +402,8 @@ def write_new_song_string_to_file(song_name:str, song_file:str,song_code:str,son
 
     if song_code == "NOACTBANKCODE":
         song_code = NOACTBANKCODE
+    if song_offset == "BASEOFFSET":
+        song_offset = BASE_OFFSET
 
     try:
         check_new_song_failsafes(song_name, song_file,song_code,song_bpm,song_offset,song_prevlocation, song_prevstart,song_prevdur,song_artist)
@@ -417,6 +419,7 @@ def write_new_song_string_to_file(song_name:str, song_file:str,song_code:str,son
         file.write(past_str + f"{song_name},{song_file},{song_code},{song_bpm},{song_offset},{song_prevlocation},{song_prevstart},{song_prevdur},{song_artist}|")
     fetch_custom_songs()
     put_songs_on_dropdown()
+    messagebox.showinfo("MHSong Loader", f"New song \"{song_name}\" successfully written to file \"{CUSTOM_SONGS_FILE_LOCATION}\" and loaded into custom song loader.")
     
 def put_songs_on_dropdown():
     try:
@@ -452,6 +455,9 @@ def check_new_song_failsafes(song_name:str, song_file:str,song_code:str,song_bpm
         raise ValueError("The song's BPM, Offset, preview start time, and/or start duration must be only numbers")
     if ".bank" not in song_file:
         raise ValueError("The song file does not contain \".bank\"")
+    
+    if ".wav" not in song_prevlocation or ".mp3" not in song_prevlocation or ".ogg" not in song_prevlocation:
+        raise ValueError("The preview file location does not contain the extensions \".mp3\", \".ogg\", or \".wav\". This may be a false alarm if your file uses a different type of extension.")
 
 start_time = time.time()
 song_count = fetch_custom_songs()
