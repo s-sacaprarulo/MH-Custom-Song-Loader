@@ -1,6 +1,7 @@
 import os
 import tkinter as tk
 from tkinter import StringVar
+from tkinter import messagebox
 import time
 import pygame
 import threading
@@ -56,6 +57,7 @@ BASE_OFFSET:str = "0.06"
 #codes for the different types of songs
 NOACTBANKCODE:str = "{95972dee-fd3a-4a5c-9024-8f714883936e}"
 
+#these are pulled at the start of the program from the CUSTOM_SONGS_FILE_LOCATION text file in the FETCH_CUSTOM_SONGS fucntion
 #key is the song name
 #list is the following: bank file, bank code, bpm, offset, [preview file, preview start time, preview duration], Artist
 SONG_DICT:dict[list[str]] = {}
@@ -192,15 +194,13 @@ def stop_preview():
         pygame.mixer.music.stop()
     except:
         print("unable to stop because nothing is playing! (or no mixer is created)")
-
 #multithread comes to this fuction to stop the song after a certain amount of time has passed
 def _stop_after_preview_time(song_durr:int):
     curr_song = chosen_level_config[1]
     time.sleep(song_durr)
     if (playing_preview_song[0] == curr_song):
         pygame.mixer.music.stop()
-#window setup
-
+#makes the music fade in when you start previewing a file
 def _fade_music_in():
     audio_mult = 0
     while audio_mult < 1.1:
@@ -208,12 +208,14 @@ def _fade_music_in():
         time.sleep(0.1)
         audio_mult += 0.1
 
+#sets the volume of the volume mixer to whatever the volume slider says on the window. This executes after changing the volume slider
 def set_volume(volume):
     try:
         pygame.mixer.music.set_volume(float(volume)/100)
     except:
         pass
 
+#changes the stats for the song whenever you change something in the song select dropdown or upload a new song. IE the song changes
 def update_song_stats():
     song = SONG_DICT.get(chosen_level_config[1])
     bpm = song[LIST_SONG_BPM]
@@ -242,20 +244,22 @@ def update_song_stats():
     song_BPM_label.config(text=f"BPM: {bpm}", fg=bpm_color, font=("Helvetica", text_size), bg=background)
     song_artist_label.config(text=f"Author: {song[LIST_SONG_ARTIST]}")
 
+#changes the description of the hell whenever a new Hell is chosen
 def update_hell_stats():
     hell=chosen_level_config[0]
     hell_name_label.config(text=hell)
     hell_description_text_label.config(text=HELL_DESCRIPTION.get(hell))
 
+#makes a textbox display a message on a textbox for a certain amount of time
 def display_message_text(label:tk.Label, duration:float, message:str, text_color:str = "black"):
     thread = threading.Thread(target=_actually_display_label, args=(label,duration,message,text_color))
     thread.start()
-
 def _actually_display_label(label:tk.Label, duration:float, message:str, text_color:str):
     label.config(text=message,fg=text_color) 
     time.sleep(duration)
     label.config(text="",fg="black")
 
+#looks to the custom_song_list file and pulls custom songs from that and adds them to the SONG_DICT dictionary
 def fetch_custom_songs() -> int:
     song_count = 0
     time_start = time.time()
@@ -295,7 +299,6 @@ def fetch_custom_songs() -> int:
             song_count += 1
     print(f"Loaded {song_count} songs in {time.time() - time_start} seconds")
     return song_count
-
 def _fetch_word(start_and_stop:list[int], line:str) -> str:
     line_end = start_and_stop[1]
     line_start = start_and_stop[0]
@@ -313,12 +316,14 @@ def _fetch_word(start_and_stop:list[int], line:str) -> str:
     start_and_stop[0] = line_end + 1
     return return_str
 
+#makes the window always appear on top if that checkbox is ticked
 def set_always_on_top():
     if always_on_top.get():
         root.wm_attributes("-topmost", True)
     else:
         root.wm_attributes("-topmost", False)
 
+#creates a new window for creating a new song
 def create_new_song():
     new_song_window = tk.Tk()
     new_song_window.title("NEW SONG")
@@ -385,6 +390,7 @@ def create_new_song():
     create_button.pack(side=tk.BOTTOM)
     new_song_window.mainloop()
 
+#using given parameters, write a SONG_DICT entry to the customsongslist text file and refreshes the SONG_DICT dictionary
 def write_new_song_string_to_file(song_name:str, song_file:str,song_code:str,song_bpm:str,song_offset:str,song_prevlocation:str, song_prevstart:str,song_prevdur:str,song_artist:str):
     past_str = ""
     try:
@@ -394,11 +400,58 @@ def write_new_song_string_to_file(song_name:str, song_file:str,song_code:str,son
         print("No custom song file detected!")
         return
 
+    if song_code == "NOACTBANKCODE":
+        song_code = NOACTBANKCODE
+
+    try:
+        check_new_song_failsafes(song_name, song_file,song_code,song_bpm,song_offset,song_prevlocation, song_prevstart,song_prevdur,song_artist)
+    except ValueError as e:
+        output = messagebox.askyesno("Song Creation Error!", f"Song creation failed because {e}. You can continue by clicking the \"Yes\" button below. Only do this if you know what you are doing. \nWould you like to continue with the creation process?")
+        if not output:
+            return
+        output = messagebox.askyesno("Song Creation Error!", f"ARE YOU SURE? ONLY DO THIS IF YOU KNOW WHAT YOU ARE DOING. THIS MAY CORRUPT THE PROGRAM'S FILES.")
+        if not output:
+            return
+
     with open(CUSTOM_SONGS_FILE_LOCATION, "w") as file:
         file.write(past_str + f"{song_name},{song_file},{song_code},{song_bpm},{song_offset},{song_prevlocation},{song_prevstart},{song_prevdur},{song_artist}|")
     fetch_custom_songs()
     put_songs_on_dropdown()
     
+def put_songs_on_dropdown():
+    try:
+        song_dropdown[0].destroy()
+        song_dropdown.pop(0)
+    except:
+        pass
+    selected_song = StringVar(root)
+    selected_song.set(list(SONG_DICT.keys())[0])
+    song_select_dropdown = tk.OptionMenu(root, selected_song, *SONG_DICT.keys(), command=on_select)
+    song_select_dropdown.config(bg="#380000", fg="#fa3605", height=1, font=("Helvetica", 12))
+    song_select_dropdown.place(x=0,y=230)
+    song_dropdown.append(song_select_dropdown)
+    chosen_level_config[1] = list(SONG_DICT.keys())[0]
+    time_start = time.time()
+    update_song_stats()
+    display_message_text(loaded_label,5, f"Loaded {song_count} songs in {time.time() - time_start:.3f} seconds", SUCCESS_COLOR)
+
+def check_new_song_failsafes(song_name:str, song_file:str,song_code:str,song_bpm:str,song_offset:str,song_prevlocation:str, song_prevstart:str,song_prevdur:str,song_artist:str):
+    #A song cannot be loaded if 
+    #-ANY part of the song contains a ',' or '|' token
+    #-The songbpm, offset, previewstart, or or prevduration, except if song_offset is "BASE OFFSET"
+    #-Song_file does not end in '.bank'
+    #-Song_prev file must end in '.wav', '.mp3', or '.ogg'. Technically this is not required, but the extension is required, and these are the most common
+    if "," in song_name or "|" in song_name or "," in song_file or "|" in song_file or "," in song_code or "|" in song_code or "," in song_bpm or "|" in song_bpm or "," in song_offset or "|" in song_offset or "," in song_prevlocation or "|" in song_prevlocation or "," in song_prevstart or "|" in song_prevstart or "," in song_prevdur or "|" in song_prevdur or "," in song_artist or "|" in song_artist:
+        raise ValueError("Input cannot contain the \"|\" or \",\" tokens")
+    try:
+        float(song_bpm)
+        float(song_offset)
+        float(song_prevstart)
+        float(song_prevdur)
+    except:
+        raise ValueError("The song's BPM, Offset, preview start time, and/or start duration must be only numbers")
+    if ".bank" not in song_file:
+        raise ValueError("The song file does not contain \".bank\"")
 
 start_time = time.time()
 song_count = fetch_custom_songs()
@@ -437,22 +490,7 @@ create_new_song_button = tk.Button(root, text="NEW", command=lambda:create_new_s
 #dropdowns
 #songs
 song_dropdown:list[tk.OptionMenu] = []
-def put_songs_on_dropdown():
-    try:
-        song_dropdown[0].destroy()
-        song_dropdown.pop(0)
-    except:
-        pass
-    selected_song = StringVar(root)
-    selected_song.set(list(SONG_DICT.keys())[0])
-    song_select_dropdown = tk.OptionMenu(root, selected_song, *SONG_DICT.keys(), command=on_select)
-    song_select_dropdown.config(bg="#380000", fg="#fa3605", height=1, font=("Helvetica", 12))
-    song_select_dropdown.place(x=0,y=230)
-    song_dropdown.append(song_select_dropdown)
-    chosen_level_config[1] = list(SONG_DICT.keys())[0]
-    time_start = time.time()
-    update_song_stats()
-    display_message_text(loaded_label,5, f"Loaded {song_count} songs in {time.time() - time_start:.3f} seconds", SUCCESS_COLOR)
+
 #hells
 selected_hell = StringVar(root)
 selected_hell.set(list(HELL_LIST)[0])
