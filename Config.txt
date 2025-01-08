@@ -1,0 +1,7 @@
+Text written in braces are read by the program
+Settings
+Custom Song List Location<Custom_Song_List.txt>
+
+Profile:<PC>
+Customsongs.json File Location<blah.customsongs.json>
+Inactive Customsongs.json File Location<blah.incustomsongs.json>

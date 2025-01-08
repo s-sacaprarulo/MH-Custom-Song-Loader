@@ -21,6 +21,9 @@ JSON_FILE_LOCATION:str = PC_HELLSINGER_FILE_PATH
 FILE_NAME:str = PC_ENABLED_FILE 
 DEACTIVATED_FILE_NAME:str = PC_DISABLED_FILE
 
+# file location, inactive file location
+FILE_LOCATION_PROFILES:dict[list[str]] = {}
+
 CUSTOM_SONGS_FILE_LOCATION:str = "Custom_Song_List.txt"
 
 LIST_SONG_BANK_FILE = 0
@@ -458,6 +461,12 @@ def check_new_song_failsafes(song_name:str, song_file:str,song_code:str,song_bpm
     
     if ".wav" not in song_prevlocation or ".mp3" not in song_prevlocation or ".ogg" not in song_prevlocation:
         raise ValueError("The preview file location does not contain the extensions \".mp3\", \".ogg\", or \".wav\". This may be a false alarm if your file uses a different type of extension.")
+
+def get_file_location_profiles():
+    # gets the file locations from the config.txt file
+    # reads through the file to do so, only reading text in <> tokens
+    
+    pass
 
 start_time = time.time()
 song_count = fetch_custom_songs()
