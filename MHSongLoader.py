@@ -17,6 +17,9 @@ PC_DISABLED_FILE = "C:/Program Files (x86)/Steam/steamapps/common/Metal Hellsing
 TEST_ENABLED_FILE = "Test.json"
 TEST_DISABLED_FILE = "in_Test.json"
 
+SETTINGS_CUSTOM_SONG_FILE_LOCATION_OPTION = "Custom Song List Location"
+SELECTED_PROFILE_SETTINGS_DICT_OPTION = "Selected Profile"
+
 JSON_FILE_LOCATION:str = PC_HELLSINGER_FILE_PATH
 FILE_NAME:str = PC_ENABLED_FILE 
 DEACTIVATED_FILE_NAME:str = PC_DISABLED_FILE
@@ -25,6 +28,7 @@ DEACTIVATED_FILE_NAME:str = PC_DISABLED_FILE
 FILE_LOCATION_PROFILES:dict[list[str]] = {}
 
 CUSTOM_SONGS_FILE_LOCATION:str = "Custom_Song_List.txt"
+SETTINGS_FILE_LOCATION = "Config.txt"
 
 LIST_SONG_BANK_FILE = 0
 LIST_SONG_ACT_CODE = 1
@@ -64,6 +68,8 @@ NOACTBANKCODE:str = "{95972dee-fd3a-4a5c-9024-8f714883936e}"
 #key is the song name
 #list is the following: bank file, bank code, bpm, offset, [preview file, preview start time, preview duration], Artist
 SONG_DICT:dict[list[str]] = {}
+SETTINGS_DICT:dict[str] = {}
+PROFILE_DICT:dict[list[str]] = {}
 
 
 #creates a string for a specific song for a given hell
@@ -423,7 +429,8 @@ def write_new_song_string_to_file(song_name:str, song_file:str,song_code:str,son
     fetch_custom_songs()
     put_songs_on_dropdown()
     messagebox.showinfo("MHSong Loader", f"New song \"{song_name}\" successfully written to file \"{CUSTOM_SONGS_FILE_LOCATION}\" and loaded into custom song loader.")
-    
+
+#puts songs on dropdown by destroying the previous one    
 def put_songs_on_dropdown():
     try:
         song_dropdown[0].destroy()
@@ -440,6 +447,7 @@ def put_songs_on_dropdown():
     time_start = time.time()
     update_song_stats()
     display_message_text(loaded_label,5, f"Loaded {song_count} songs in {time.time() - time_start:.3f} seconds", SUCCESS_COLOR)
+
 
 def check_new_song_failsafes(song_name:str, song_file:str,song_code:str,song_bpm:str,song_offset:str,song_prevlocation:str, song_prevstart:str,song_prevdur:str,song_artist:str):
     #A song cannot be loaded if 
@@ -462,13 +470,125 @@ def check_new_song_failsafes(song_name:str, song_file:str,song_code:str,song_bpm
     if ".wav" not in song_prevlocation or ".mp3" not in song_prevlocation or ".ogg" not in song_prevlocation:
         raise ValueError("The preview file location does not contain the extensions \".mp3\", \".ogg\", or \".wav\". This may be a false alarm if your file uses a different type of extension.")
 
-def get_file_location_profiles():
+def get_settings():
     # gets the file locations from the config.txt file
     # reads through the file to do so, only reading text in <> tokens
     
-    pass
+    #Failsafe
+    try:
+        with open(SETTINGS_FILE_LOCATION, "r") as file:
+            file.read()
+    except:
+        raise FileExistsError("Could not find a settings file!")
+    
+    all_settings_pulled = False
+
+    with open(SETTINGS_FILE_LOCATION, "r") as file:
+        file_text = file.read()
+        start_index = 0
+        end_index = 0
+        while not all_settings_pulled:
+            line:str = ""
+            while line == "":
+                if file_text[end_index:end_index+1] == "<":
+                    bracket_start_index = end_index + 1
+                    while line == "":
+                        if file_text[end_index:end_index+1] == ">":
+                            line = file_text[bracket_start_index:end_index]
+                            start_index = end_index
+                        elif end_index > len(file_text):
+                            all_settings_pulled = True
+                            break
+                        else:
+                            end_index += 1
+                elif end_index > len(file_text):
+                    all_settings_pulled = True
+                    break
+                else:
+                    end_index += 1
+                    start_index += 1
+            if all_settings_pulled:
+                break
+            end_index += 1
+            start_index = end_index
+
+            start_and_stop = [0, 0]
+            setting = _fetch_word(start_and_stop, line)
+            if setting == "Profile":
+                profile_name = _fetch_word(start_and_stop, line)
+                profile_location = _fetch_word(start_and_stop, line)
+                inactive_file_location = "In_" + profile_location
+                PROFILE_DICT.update({profile_name:[profile_location, inactive_file_location]})
+                continue
+            option = _fetch_word(start_and_stop, line)
+            SETTINGS_DICT.update({setting:option})   
+def set_file_locations():
+    global CUSTOM_SONGS_FILE_LOCATION
+    CUSTOM_SONGS_FILE_LOCATION = SETTINGS_DICT.get(SETTINGS_CUSTOM_SONG_FILE_LOCATION_OPTION)
+    profile = SETTINGS_DICT.get(SELECTED_PROFILE_SETTINGS_DICT_OPTION)
+    global FILE_NAME
+    FILE_NAME = PROFILE_DICT.get(profile)[0]
+    global DEACTIVATED_FILE_NAME
+    DEACTIVATED_FILE_NAME = PROFILE_DICT.get(profile)[1]
+def change_profile(setting):
+    #we are finding the profile we need to change
+    start = 0
+    changing_file_start = 0
+    changing_file_end = 0
+    end = 0
+    try:
+        with open(SETTINGS_FILE_LOCATION, "r") as file:
+            file.read()
+    except:
+        raise FileExistsError("Could not find a settings file!")
+    
+    all_settings_pulled = False
+
+    with open(SETTINGS_FILE_LOCATION, "r") as file:
+        end = len(file)
+        file_text = file.read()
+        start_index = 0
+        end_index = 0
+        while not all_settings_pulled:
+            line:str = ""
+            while line == "":
+                if file_text[end_index:end_index+1] == "<":
+                    bracket_start_index = end_index + 1
+                    while line == "":
+                        if file_text[end_index:end_index+1] == ">":
+                            line = file_text[bracket_start_index:end_index]
+                            start_index = end_index
+                        elif end_index > len(file_text):
+                            all_settings_pulled = True
+                            break
+                        else:
+                            end_index += 1
+                elif end_index > len(file_text):
+                    all_settings_pulled = True
+                    break
+                else:
+                    end_index += 1
+                    start_index += 1
+            if all_settings_pulled:
+                break
+            end_index += 1
+            start_index = end_index
+
+            start_and_stop = [0, 0]
+            setting = _fetch_word(start_and_stop, line)
+            if setting == SELECTED_PROFILE_SETTINGS_DICT_OPTION:
+                changing_file_start = start_index
+                #i dont have time so im gonna pseudocode
+                #continue going in the config text until the next '|' token
+                #continue running through the rest of the config.txt
+                #when we reach the end, change both changing_file_end and end to be the values they should be
+                #make the text file equal the text before changing_file_start, then the correct profile, then a "|" token, then the rest of the text
+
+
 
 start_time = time.time()
+get_settings()
+set_file_locations()
 song_count = fetch_custom_songs()
 
 #root setup
@@ -505,12 +625,17 @@ create_new_song_button = tk.Button(root, text="NEW", command=lambda:create_new_s
 #dropdowns
 #songs
 song_dropdown:list[tk.OptionMenu] = []
-
 #hells
 selected_hell = StringVar(root)
 selected_hell.set(list(HELL_LIST)[0])
 hell_select_dropdown = tk.OptionMenu(root, selected_hell, *HELL_LIST, command=on_select)
 hell_select_dropdown.config(bg="#380000", fg="#fa3605", height=1, font=("Helvetica", 12))
+#file location profile
+selected_profile = StringVar(root)
+selected_profile.set(list(SONG_DICT.keys())[0])
+profile_select_dropdown = tk.OptionMenu(root, selected_profile, *PROFILE_DICT.keys(), command=change_profile)
+profile_select_dropdown.config(bg="#380000", fg="#fa3605", height=1, font=("Helvetica", 12))
+
 #preview volume slider
 preview_volume_slider = tk.Scale(root, from_=100, to=0,orient="vertical",command=set_volume,width=12, length=100,bg="#380000",fg="#ff602b",font=("Helvetica", 12))
 
@@ -523,6 +648,7 @@ always_on_top_checkbox = tk.Checkbutton(root, text="Always on top", variable = a
 
 load_song_button.pack(side=tk.BOTTOM)
 attach_outcome_label.place(x=100,y=38)
+profile_select_dropdown.place(x=0,y=305)
 
 #top
 attach_script_button.place(x=3,y=36)
