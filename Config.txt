@@ -16,3 +16,4 @@ Profile being the Setting option
 The first entry after that is the profile name
 The entry after that is the file location for that profile
 <Profile|PC|blah.customsongs.json|>
+<Profile|VR|blahblah.customsongs.json|>

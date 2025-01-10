@@ -545,10 +545,11 @@ def change_profile(setting):
     all_settings_pulled = False
 
     with open(SETTINGS_FILE_LOCATION, "r") as file:
-        end = len(file)
         file_text = file.read()
+        end = len(file_text)
         start_index = 0
         end_index = 0
+        #find a setting
         while not all_settings_pulled:
             line:str = ""
             while line == "":
@@ -573,16 +574,18 @@ def change_profile(setting):
                 break
             end_index += 1
             start_index = end_index
-
+            #check if its the setting we want
             start_and_stop = [0, 0]
             setting = _fetch_word(start_and_stop, line)
             if setting == SELECTED_PROFILE_SETTINGS_DICT_OPTION:
-                changing_file_start = start_index
+                #if it is
                 #i dont have time so im gonna pseudocode
                 #continue going in the config text until the next '|' token
                 #continue running through the rest of the config.txt
                 #when we reach the end, change both changing_file_end and end to be the values they should be
                 #make the text file equal the text before changing_file_start, then the correct profile, then a "|" token, then the rest of the text
+                changing_file_start = start_index
+
 
 
 
