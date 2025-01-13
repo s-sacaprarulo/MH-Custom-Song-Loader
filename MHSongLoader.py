@@ -549,11 +549,13 @@ def change_profile(setting):
         end = len(file_text)
         start_index = 0
         end_index = 0
+        modifying_line_start = 0
         #find a setting
         while not all_settings_pulled:
             line:str = ""
             while line == "":
                 if file_text[end_index:end_index+1] == "<":
+                    modifying_line_start = end_index
                     bracket_start_index = end_index + 1
                     while line == "":
                         if file_text[end_index:end_index+1] == ">":
@@ -576,15 +578,40 @@ def change_profile(setting):
             start_index = end_index
             #check if its the setting we want
             start_and_stop = [0, 0]
-            setting = _fetch_word(start_and_stop, line)
-            if setting == SELECTED_PROFILE_SETTINGS_DICT_OPTION:
+            found_setting = _fetch_word(start_and_stop, line)
+            if found_setting == SELECTED_PROFILE_SETTINGS_DICT_OPTION:
                 #if it is
                 #i dont have time so im gonna pseudocode
                 #continue going in the config text until the next '|' token
                 #continue running through the rest of the config.txt
                 #when we reach the end, change both changing_file_end and end to be the values they should be
                 #make the text file equal the text before changing_file_start, then the correct profile, then a "|" token, then the rest of the text
-                changing_file_start = start_index
+                found_next_line = False
+                end_index = modifying_line_start
+                while not found_next_line:
+                    if file_text[end_index:end_index + 1] == "|":
+                        found_next_line = True
+                    elif end_index > end:
+                        raise IndexError("Reached the end of the text file before finding a | token. Check the config text file")
+                    else:
+                        end_index += 1
+                changing_file_start = end_index
+                end_index += 1
+                found_next_line = False
+                while not found_next_line:
+                    if file_text[end_index:end_index + 1] == "|":
+                        found_next_line = True
+                    elif end_index > end:
+                        raise IndexError("Reached the end of the text file before finding a | token. Check the config text file")
+                    else:
+                        end_index += 1
+                changing_file_end = end_index
+                with open(SETTINGS_FILE_LOCATION, "w") as editing_file:
+                    before_modification_str = file_text[start:changing_file_start]
+                    after_modification_str = file_text[changing_file_end:end]
+                    editing_file.write(before_modification_str + "|" + setting + after_modification_str)
+                    return
+                    
 
 
 

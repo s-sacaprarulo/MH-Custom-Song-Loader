@@ -1,0 +1,19 @@
+Text written in braces are read by the program.
+"|" tokens are used to separate entries, and all entries should end with a "|" token before the close bracket token token IE Setting|entry|
+It is suggested you do not modify this file unless you know what you are doing.
+CASE SENSITIVE
+
+
+General Settings
+<Custom Song List Location|Custom_Song_List.txt|>
+<Selected Profile|PC|>
+<Volume|25|>
+
+Profiles
+
+Profiles follow the following format:
+Profile being the Setting option
+The first entry after that is the profile name
+The entry after that is the file location for that profile
+<Profile|PC|blah.customsongs.json|>
+<Profile|VR|blahblah.customsongs.json|>
