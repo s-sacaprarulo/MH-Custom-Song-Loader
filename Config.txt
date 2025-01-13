@@ -17,3 +17,4 @@ The first entry after that is the profile name
 The entry after that is the file location for that profile
 <Profile|PC|C:/Program Files (x86)/Steam/steamapps/common/Metal Hellsinger/Metal_Data/StreamingAssets/customsongs.json|>
 <Profile|VR|C:/Program Files (x86)/Steam/steamapps/common/MetalHellsingerVR/MetalVR_Data/StreamingAssets/customsongs.json|>
+<Profile|Test|Test.json|>
