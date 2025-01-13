@@ -528,6 +528,8 @@ def set_file_locations():
     profile = SETTINGS_DICT.get(SELECTED_PROFILE_SETTINGS_DICT_OPTION)
     global FILE_NAME
     FILE_NAME = PROFILE_DICT.get(profile)[0]
+    global JSON_FILE_LOCATION
+    JSON_FILE_LOCATION = PROFILE_DICT.get(profile)[0]
     global DEACTIVATED_FILE_NAME
     DEACTIVATED_FILE_NAME = PROFILE_DICT.get(profile)[1]
 def change_profile(setting):
@@ -610,6 +612,7 @@ def change_profile(setting):
                     before_modification_str = file_text[start:changing_file_start]
                     after_modification_str = file_text[changing_file_end:end]
                     editing_file.write(before_modification_str + "|" + setting + after_modification_str)
+                    set_file_locations()
                     return
                     
 
