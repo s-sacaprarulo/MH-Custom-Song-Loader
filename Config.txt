@@ -1,15 +1,24 @@
 Text written in braces are read by the program.
 "|" tokens are used to separate entries, and all entries should end with a "|" token before the close bracket token token IE Setting|entry|
 It is suggested you do not modify this file unless you know what you are doing.
-CASE SENSITIVE
+CASE SENSITIVE BY THE WAY
+
+obviously, because I can write, I will try to describe everything in as much detail as I can if you do want to edit this file for some reason.
 
 
-General Settings
-<Custom Song List Location|Custom_Song_List.txt|>
-<Selected Profile|VR|>
+GENERAL SETTINGS
+
+The location that the program stores all your custom songs to.
+<Custom Song List Location|Custom_Song_List.txt|> 
+
+The currently selected profile. The program reads and (will eventually) make the second part be on the dropdown by default
+<Selected Profile|PC|>
+
+The volume that the volume slider starts at
 <Volume|25|>
 
-Profiles
+
+PROFILES
 
 Profiles follow the following format:
 Profile being the Setting option
@@ -17,4 +26,4 @@ The first entry after that is the profile name
 The entry after that is the file location for that profile
 <Profile|PC|C:/Program Files (x86)/Steam/steamapps/common/Metal Hellsinger/Metal_Data/StreamingAssets/customsongs.json|>
 <Profile|VR|C:/Program Files (x86)/Steam/steamapps/common/MetalHellsingerVR/MetalVR_Data/StreamingAssets/customsongs.json|>
-<Profile|Test|Test.json|>
+<Profile|TEST|Test.json|>

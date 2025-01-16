@@ -532,7 +532,7 @@ def set_file_locations():
     JSON_FILE_LOCATION = PROFILE_DICT.get(profile)[0]
     global DEACTIVATED_FILE_NAME
     DEACTIVATED_FILE_NAME = PROFILE_DICT.get(profile)[1]
-def change_profile(setting):
+def _change_profile(setting):
     #we are finding the profile we need to change
     start = 0
     changing_file_start = 0
@@ -612,9 +612,14 @@ def change_profile(setting):
                     before_modification_str = file_text[start:changing_file_start]
                     after_modification_str = file_text[changing_file_end:end]
                     editing_file.write(before_modification_str + "|" + setting + after_modification_str)
-                    set_file_locations()
                     return
-                    
+def change_profile(profile):
+    _change_profile(profile)
+    global PROFILE_DICT
+    PROFILE_DICT = {}
+    get_settings()
+    set_file_locations()
+                
 
 
 
@@ -665,7 +670,7 @@ hell_select_dropdown = tk.OptionMenu(root, selected_hell, *HELL_LIST, command=on
 hell_select_dropdown.config(bg="#380000", fg="#fa3605", height=1, font=("Helvetica", 12))
 #file location profile
 selected_profile = StringVar(root)
-selected_profile.set(list(SONG_DICT.keys())[0])
+selected_profile.set(list(PROFILE_DICT.keys())[0]) #TODO: Make the program read the file and set the currently active profile to be on the dropdown at startup
 profile_select_dropdown = tk.OptionMenu(root, selected_profile, *PROFILE_DICT.keys(), command=change_profile)
 profile_select_dropdown.config(bg="#380000", fg="#fa3605", height=1, font=("Helvetica", 12))
 
