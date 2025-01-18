@@ -5,6 +5,7 @@ from tkinter import messagebox
 import time
 import pygame
 import threading
+import copy
 
 #file paths
 TEST_FILE_PATH = "Test.json"
@@ -517,7 +518,20 @@ def get_settings():
             if setting == "Profile":
                 profile_name = _fetch_word(start_and_stop, line)
                 profile_location = _fetch_word(start_and_stop, line)
-                inactive_file_location = "In_" + profile_location
+                #to make the inactivee file, we need to go back through the string until we past the ".json". then we will add something there.
+                to_be_inactive_location = copy.deepcopy(profile_location)
+                inactive_file_location = ""
+                made_inactive = False
+                part = len(to_be_inactive_location)
+                while not made_inactive:
+                    letter = to_be_inactive_location[part-1:part]
+                    if letter == ".":
+                        inactive_file_location = profile_location[0:part-1] + "_Inactive" + profile_location[part - 1:len(to_be_inactive_location)]
+                        made_inactive = True
+                    elif part < 0:
+                        raise NameError("Could not find a \".\" token in the file location")
+                    else:
+                        part -= 1
                 PROFILE_DICT.update({profile_name:[profile_location, inactive_file_location]})
                 continue
             option = _fetch_word(start_and_stop, line)
@@ -670,7 +684,7 @@ hell_select_dropdown = tk.OptionMenu(root, selected_hell, *HELL_LIST, command=on
 hell_select_dropdown.config(bg="#380000", fg="#fa3605", height=1, font=("Helvetica", 12))
 #file location profile
 selected_profile = StringVar(root)
-selected_profile.set(list(PROFILE_DICT.keys())[0]) #TODO: Make the program read the file and set the currently active profile to be on the dropdown at startup
+selected_profile.set(SETTINGS_DICT.get(SELECTED_PROFILE_SETTINGS_DICT_OPTION)) #TODO: Make the program read the file and set the currently active profile to be on the dropdown at startup
 profile_select_dropdown = tk.OptionMenu(root, selected_profile, *PROFILE_DICT.keys(), command=change_profile)
 profile_select_dropdown.config(bg="#380000", fg="#fa3605", height=1, font=("Helvetica", 12))
 
