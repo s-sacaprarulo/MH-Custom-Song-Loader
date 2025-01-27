@@ -225,6 +225,8 @@ def set_volume(volume):
         pygame.mixer.music.set_volume(float(volume)/100)
     except:
         pass
+    finally:
+        change_an_option_in_config(SETTINGS_VOLUME_OPTION, volume)
 
 #changes the stats for the song whenever you change something in the song select dropdown or upload a new song. IE the song changes
 def update_song_stats():
@@ -419,10 +421,7 @@ def write_new_song_string_to_file(song_name:str, song_file:str,song_code:str,son
     try:
         check_new_song_failsafes(song_name, song_file,song_code,song_bpm,song_offset,song_prevlocation, song_prevstart,song_prevdur,song_artist)
     except ValueError as e:
-        output = messagebox.askyesno("Song Creation Error!", f"Song creation failed because {e}. You can continue by clicking the \"Yes\" button below.\nWould you like to continue with the creation process?")
-        if not output:
-            return
-        output = messagebox.askyesno("Song Creation Error!", f"Are you sure? This could cause file corruption and errors. Only continue if you know what you are doing. \nUsing a \",\" or \"|\" token will ABSOLUTELY ALWAYS BREAK THE PROGRAM AND CAUSE AN INFINITE LOOP AND/OR ERRORS (you will have to modify the text file manually).")
+        output = messagebox.askyesno("Song Creation Error!", f"Song creation failed because: {e}. You can continue by clicking the \"Yes\" button below.\nWould you like to continue with the creation process?")
         if not output:
             return
 
@@ -547,7 +546,7 @@ def set_file_locations():
     JSON_FILE_LOCATION = PROFILE_DICT.get(profile)[0]
     global DEACTIVATED_FILE_NAME
     DEACTIVATED_FILE_NAME = PROFILE_DICT.get(profile)[1]
-def _change_profile(setting):
+def change_an_option_in_config(changing_option, new_value):
     #we are finding the profile we need to change
     start = 0
     changing_file_start = 0
@@ -596,7 +595,7 @@ def _change_profile(setting):
             #check if its the setting we want
             start_and_stop = [0, 0]
             found_setting = _fetch_word(start_and_stop, line)
-            if found_setting == SELECTED_PROFILE_SETTINGS_DICT_OPTION:
+            if found_setting == changing_option:
                 #if it is
                 #i dont have time so im gonna pseudocode
                 #continue going in the config text until the next '|' token
@@ -626,17 +625,14 @@ def _change_profile(setting):
                 with open(SETTINGS_FILE_LOCATION, "w") as editing_file:
                     before_modification_str = file_text[start:changing_file_start]
                     after_modification_str = file_text[changing_file_end:end]
-                    editing_file.write(before_modification_str + "|" + setting + after_modification_str)
+                    editing_file.write(before_modification_str + "|" + new_value + after_modification_str)
                     return
 def change_profile(profile):
-    _change_profile(profile)
+    change_an_option_in_config(SELECTED_PROFILE_SETTINGS_DICT_OPTION, profile)
     global PROFILE_DICT
     PROFILE_DICT = {}
     get_settings()
     set_file_locations()
-                
-
-
 
 
 start_time = time.time()
@@ -718,7 +714,7 @@ song_label.place(x=0, y=200)
 song_options_label.place(x=545,y=58)
 preview_button.place(x=612,y=129)
 stop_preview_button.place(x=612,y=170)
-preview_volume_slider.set(SETTINGS_DICT(SETTINGS_VOLUME_OPTION))
+preview_volume_slider.set(SETTINGS_DICT.get(SETTINGS_VOLUME_OPTION))
 preview_volume_slider.place(x=552,y=97)
 volume_slider_label.place(x=557, y=80)
 auto_preview_song_checkbox.place(x=612,y=97)
