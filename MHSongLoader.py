@@ -73,6 +73,7 @@ SONG_DICT:dict[list[str]] = {}
 SETTINGS_DICT:dict[str] = {}
 PROFILE_DICT:dict[list[str]] = {}
 
+preview_song_index = 0
 
 #creates a string for a specific song for a given hell
 #raises an exception if the hell or custom song do not exist
@@ -190,6 +191,7 @@ def preview_song():
     #set_volume(preview_volume_slider.get())
     fade_thread = threading.Thread(target=_fade_music_in)
     fade_thread.start()
+    pygame.mixer.music.set_volume(0) #NOTE: I changed this and couldn't test it, this may break the sound mixer
     pygame.mixer.music.load(song[PREVIEW_SONG_FILE])
     pygame.mixer.music.play(start=song[PREVIEW_SONG_START_TIME])
     playing_preview_song[0] = chosen_level_config[1]
@@ -207,9 +209,11 @@ def stop_preview():
         print("unable to stop because nothing is playing! (or no mixer is created)")
 #multithread comes to this fuction to stop the song after a certain amount of time has passed
 def _stop_after_preview_time(song_durr:int):
-    curr_song = chosen_level_config[1]
+    global preview_song_index
+    preview_song_index += 1
+    last_index = preview_song_index
     time.sleep(song_durr)
-    if (playing_preview_song[0] == curr_song):
+    if (preview_song_index == last_index):
         pygame.mixer.music.stop()
 #makes the music fade in when you start previewing a file
 def _fade_music_in():

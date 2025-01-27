@@ -15,7 +15,7 @@ The currently selected profile. The program reads and (will eventually) make the
 <Selected Profile|PC|>
 
 The volume that the volume slider starts at
-<Volume|7|>
+<Volume|29|>
 
 
 PROFILES
