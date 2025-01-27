@@ -30,6 +30,7 @@ FILE_LOCATION_PROFILES:dict[list[str]] = {}
 
 CUSTOM_SONGS_FILE_LOCATION:str = "Custom_Song_List.txt"
 SETTINGS_FILE_LOCATION = "Config.txt"
+SETTINGS_VOLUME_OPTION = "Volume"
 
 LIST_SONG_BANK_FILE = 0
 LIST_SONG_ACT_CODE = 1
@@ -717,7 +718,7 @@ song_label.place(x=0, y=200)
 song_options_label.place(x=545,y=58)
 preview_button.place(x=612,y=129)
 stop_preview_button.place(x=612,y=170)
-preview_volume_slider.set(25)
+preview_volume_slider.set(SETTINGS_DICT(SETTINGS_VOLUME_OPTION))
 preview_volume_slider.place(x=552,y=97)
 volume_slider_label.place(x=557, y=80)
 auto_preview_song_checkbox.place(x=612,y=97)
