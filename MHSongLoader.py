@@ -8,22 +8,13 @@ import threading
 import copy
 
 #file paths
-TEST_FILE_PATH = "Test.json"
-PC_HELLSINGER_FILE_PATH = "C:/Program Files (x86)/Steam/steamapps/common/Metal Hellsinger/Metal_Data/StreamingAssets/customsongs.json"
-VR_HELLSINGER_FILE_PATH = "C:/Program Files (x86)/Steam/steamapps/common/MetalHellsingerVR/MetalVR_Data/StreamingAssets/customsongs.json"
-
-PC_ENABLED_FILE = "C:/Program Files (x86)/Steam/steamapps/common/Metal Hellsinger/Metal_Data/StreamingAssets/customsongs.json"
-PC_DISABLED_FILE = "C:/Program Files (x86)/Steam/steamapps/common/Metal Hellsinger/Metal_Data/StreamingAssets/inactive_customsongs.json"
-
-TEST_ENABLED_FILE = "Test.json"
-TEST_DISABLED_FILE = "in_Test.json"
 
 SETTINGS_CUSTOM_SONG_FILE_LOCATION_OPTION = "Custom Song List Location"
 SELECTED_PROFILE_SETTINGS_DICT_OPTION = "Selected Profile"
 
-JSON_FILE_LOCATION:str = PC_HELLSINGER_FILE_PATH
-FILE_NAME:str = PC_ENABLED_FILE 
-DEACTIVATED_FILE_NAME:str = PC_DISABLED_FILE
+JSON_FILE_LOCATION:str = ""
+FILE_NAME:str =  ""
+DEACTIVATED_FILE_NAME:str = ""
 
 # file location, inactive file location
 FILE_LOCATION_PROFILES:dict[list[str]] = {}
