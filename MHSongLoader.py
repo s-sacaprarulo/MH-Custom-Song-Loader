@@ -462,9 +462,6 @@ def check_new_song_failsafes(song_name:str, song_file:str,song_code:str,song_bpm
         raise ValueError("The song's BPM, Offset, preview start time, and/or start duration must be only numbers")
     if ".bank" not in song_file:
         raise ValueError("The song file does not contain \".bank\"")
-    
-    if ".wav" not in song_prevlocation or ".mp3" not in song_prevlocation or ".ogg" not in song_prevlocation:
-        raise ValueError("The preview file location does not contain the extensions \".mp3\", \".ogg\", or \".wav\". This may be a false alarm if your file uses a different type of extension.")
 
 def get_settings():
     # gets the file locations from the config.txt file
