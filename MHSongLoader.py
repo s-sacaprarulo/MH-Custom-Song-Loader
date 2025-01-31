@@ -7,7 +7,12 @@ import pygame
 import threading
 import copy
 
-#file paths
+
+#TODO: The stuff we need to make before making this project public
+# Add a way to set where Config.txt is
+# Add a way to change/set where the Custom_Song_List.txt file is
+# Add a way to import a song without Author or Preview stuff because they arent essential
+
 
 SETTINGS_CUSTOM_SONG_FILE_LOCATION_OPTION = "Custom Song List Location"
 SELECTED_PROFILE_SETTINGS_DICT_OPTION = "Selected Profile"
@@ -626,6 +631,8 @@ def change_profile(profile):
     get_settings()
     set_file_locations()
 
+with open("temp.txt", 'x') as file:
+    pass
 
 start_time = time.time()
 get_settings()
