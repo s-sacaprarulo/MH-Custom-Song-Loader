@@ -43,6 +43,33 @@ SUCCESS_COLOR = "#00a616"
 FAILED_COLOR = "red"
 BACKGROUND_COLOR = "#260303"
 
+CONFIG_TEXT_FILE_TEXT = '''Text written in braces are read by the program.
+"|" tokens are used to separate entries, and all entries should end with a "|" token before the close bracket token token IE Setting|entry|
+It is suggested you do not modify this file unless you know what you are doing.
+CASE SENSITIVE BY THE WAY
+
+obviously, because I can write, I will try to describe everything in as much detail as I can if you do want to edit this file for some reason.
+
+
+GENERAL SETTINGS
+
+The location that the program stores all your custom songs to.
+<Custom Song List Location|Custom_Song_List.txt|> 
+
+The currently selected profile. The program reads and (will eventually) make the second part be on the dropdown by default
+<Selected Profile|TEST|>
+
+The volume that the volume slider starts at
+<Volume|29|>
+
+
+PROFILES
+
+Profiles follow the following format:
+Profile being the Setting option
+The first entry after that is the profile name
+The entry after that is the file location for that profile'''
+
 INTRO_CONST:str = "{\"customLevelMusic\" : ["
 OUTRO_CONST:str = "]}"
 
@@ -477,12 +504,14 @@ def get_settings():
         with open(SETTINGS_FILE_LOCATION, "r") as file:
             file.read()
     except:
-        raise FileExistsError("Could not find a settings file!")
+        no_config_text_file_failsafe()
     
     all_settings_pulled = False
 
     with open(SETTINGS_FILE_LOCATION, "r") as file:
         file_text = file.read()
+        if len(file_text == 0):
+            messagebox.askyesnocancel("MH Custom Song Loader", "The found Config.txt file has been detected as blank. This may have happened due to a program crash, file corruption, or maunally changing the file. The program can attempt to put in the essential text to the file. \n Press yes to add the essential text. Press no to ignore this message. Press Cancel to close the prgoram")
         start_index = 0
         end_index = 0
         while not all_settings_pulled:
@@ -631,8 +660,13 @@ def change_profile(profile):
     get_settings()
     set_file_locations()
 
-with open("temp.txt", 'x') as file:
-    pass
+def no_config_text_file_failsafe():
+    create_the_file = messagebox.askyesno("MH Custom Song Loader ERROR", "Could not find a Config.txt file. The program will not function without this essential file. It has either been renamed or deleted. The program can attempt to make a file at it's directory. Alternatively, you can create one yourself. Clicking \"yes\" will attempt to create the file.")
+    if create_the_file:
+        with open("Config.txt", "x") as file:
+            file.write(CONFIG_TEXT_FILE_TEXT)
+    else:
+        exit()
 
 start_time = time.time()
 get_settings()
