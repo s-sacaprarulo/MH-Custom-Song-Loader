@@ -511,7 +511,7 @@ def get_settings():
     with open(SETTINGS_FILE_LOCATION, "r") as file:
         file_text = file.read()
         if len(file_text) == 0:
-            messagebox.askyesnocancel("MH Custom Song Loader", "The found Config.txt file has been detected as blank. This may have happened due to a program crash, file corruption, or maunally changing the file. The program can attempt to put in the essential text to the file. \n Press yes to add the essential text. Press no to ignore this message. Press Cancel to close the prgoram")
+            messagebox.askyesnocancel("MH Custom Song Loader", "The found Config.txt file has been detected as blank. This may have happened due to a program crash, file corruption, or maunally changing the file. The program can attempt to put in the essential text to the file. \n Press yes to add the essential text. Press no to ignore this message (NOT RECOMMENDED). Press Cancel to close the prgoram")
         start_index = 0
         end_index = 0
         while not all_settings_pulled:
@@ -566,12 +566,15 @@ def set_file_locations():
     global CUSTOM_SONGS_FILE_LOCATION
     CUSTOM_SONGS_FILE_LOCATION = SETTINGS_DICT.get(SETTINGS_CUSTOM_SONG_FILE_LOCATION_OPTION)
     profile = SETTINGS_DICT.get(SELECTED_PROFILE_SETTINGS_DICT_OPTION)
-    global FILE_NAME
-    FILE_NAME = PROFILE_DICT.get(profile)[0]
-    global JSON_FILE_LOCATION
-    JSON_FILE_LOCATION = PROFILE_DICT.get(profile)[0]
-    global DEACTIVATED_FILE_NAME
-    DEACTIVATED_FILE_NAME = PROFILE_DICT.get(profile)[1]
+    try:
+        global FILE_NAME
+        FILE_NAME = PROFILE_DICT.get(profile)[0]
+        global JSON_FILE_LOCATION
+        JSON_FILE_LOCATION = PROFILE_DICT.get(profile)[0]
+        global DEACTIVATED_FILE_NAME
+        DEACTIVATED_FILE_NAME = PROFILE_DICT.get(profile)[1]
+    except:
+        pass
 def change_an_option_in_config(changing_option, new_value):
     #we are finding the profile we need to change
     start = 0

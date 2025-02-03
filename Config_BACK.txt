@@ -12,10 +12,10 @@ The location that the program stores all your custom songs to.
 <Custom Song List Location|Custom_Song_List.txt|> 
 
 The currently selected profile. The program reads and (will eventually) make the second part be on the dropdown by default
-<Selected Profile|TEST|>
+<Selected Profile|PC|>
 
 The volume that the volume slider starts at
-<Volume|29|>
+<Volume|26|>
 
 
 PROFILES

@@ -12,10 +12,10 @@ The location that the program stores all your custom songs to.
 <Custom Song List Location|Custom_Song_List.txt|> 
 
 The currently selected profile. The program reads and (will eventually) make the second part be on the dropdown by default
-<Selected Profile|PC|>
+<Selected Profile|TEST|>
 
 The volume that the volume slider starts at
-<Volume|26|>
+<Volume|29|>
 
 
 PROFILES
@@ -24,6 +24,3 @@ Profiles follow the following format:
 Profile being the Setting option
 The first entry after that is the profile name
 The entry after that is the file location for that profile
-<Profile|PC|C:/Program Files (x86)/Steam/steamapps/common/Metal Hellsinger/Metal_Data/StreamingAssets/customsongs.json|>
-<Profile|VR|C:/Program Files (x86)/Steam/steamapps/common/MetalHellsingerVR/MetalVR_Data/StreamingAssets/customsongs.json|>
-<Profile|TEST|Test.json|>
