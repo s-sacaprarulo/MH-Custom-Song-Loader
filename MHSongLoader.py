@@ -510,7 +510,7 @@ def get_settings():
 
     with open(SETTINGS_FILE_LOCATION, "r") as file:
         file_text = file.read()
-        if len(file_text == 0):
+        if len(file_text) == 0:
             messagebox.askyesnocancel("MH Custom Song Loader", "The found Config.txt file has been detected as blank. This may have happened due to a program crash, file corruption, or maunally changing the file. The program can attempt to put in the essential text to the file. \n Press yes to add the essential text. Press no to ignore this message. Press Cancel to close the prgoram")
         start_index = 0
         end_index = 0
